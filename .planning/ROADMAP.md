@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Splash sound plays when user exceeds spill threshold
   4. Audio feedback occurs within 100ms of sensor input (measured with test app)
   5. Audio plays correctly alongside music or podcasts without cutting them off
-**Plans**: TBD
+**Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 01-01: Sensor pipeline (accelerometer, gyroscope, filtering, gravity compensation)
-- [ ] 01-02: Smoothness engine (jerk calculation, risk normalization, rolling window)
-- [ ] 01-03: Audio feedback system (pre-loaded buffers, triggers, latency validation)
+- [ ] 01-01-PLAN.md — Project setup + sensor pipeline (DeviceMotion, filtering, Zustand store)
+- [ ] 01-02-PLAN.md — Smoothness engine (jerk calculation, risk normalization, rolling window)
+- [ ] 01-03-PLAN.md — Audio feedback system (pre-loaded buffers, triggers, device verification)
 
 ### Phase 2: Background Execution & Permissions
 **Goal**: App detects drives automatically and continues recording with screen off or app backgrounded
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Sensor & Audio Foundation | 0/3 | Not started | - |
+| 1. Sensor & Audio Foundation | 0/3 | Planned | - |
 | 2. Background Execution & Permissions | 0/3 | Not started | - |
 | 3. Drive Session Management | 0/3 | Not started | - |
 | 4. UI & User Experience | 0/3 | Not started | - |
@@ -118,5 +118,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 ---
 *Roadmap created: 2026-02-01*
+*Phase 1 planned: 2026-02-01*
 *Total plans: 14 (estimated, refined during planning)*
 *Total v1 requirements: 36 mapped*
