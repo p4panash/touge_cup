@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 ## Current Position
 
 Phase: 1 of 5 (Sensor & Audio Foundation)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-01 - Completed 01-01-PLAN.md (Sensor Pipeline Foundation)
+Last activity: 2026-02-01 - Completed 01-02-PLAN.md (Smoothness Engine)
 
-Progress: [#.........] 7%
+Progress: [##........] 14%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 4 min
-- Total execution time: 4 min
+- Total plans completed: 2
+- Average duration: 3 min
+- Total execution time: 6 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-sensor-audio-foundation | 1 | 4 min | 4 min |
+| 01-sensor-audio-foundation | 2 | 6 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min)
-- Trend: -
+- Last 5 plans: 01-01 (4 min), 01-02 (2 min)
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -47,6 +47,9 @@ Recent decisions affecting current work:
 - [01-01]: Used DeviceMotion.acceleration instead of raw Accelerometer - already gravity-compensated by OS
 - [01-01]: 2Hz low-pass filter cutoff - preserves driving dynamics while removing vibration noise
 - [01-01]: Separate Zustand store for sensors - avoids performance issues with 50Hz updates
+- [01-02]: Used actual timestamp deltas for jerk calculation - critical for Android variable intervals
+- [01-02]: Z-axis excluded from jerk magnitude - vertical motion is road surface, not driving smoothness
+- [01-02]: 1500ms settling period - middle of 1-2s range, prevents false positives during mounting
 
 ### Pending Todos
 
@@ -60,9 +63,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-01T20:59:49Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-02-01T21:04:45Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
 
 ---
-*Next step: Execute 01-02-PLAN.md (Smoothness Engine)*
+*Next step: Execute 01-03-PLAN.md (Audio Feedback)*
