@@ -2,6 +2,11 @@ import { create } from 'zustand';
 import { FilteredSensorData } from '../sensors/types';
 
 /**
+ * Difficulty level for spill risk thresholds
+ */
+export type DifficultyLevel = 'easy' | 'experienced' | 'master';
+
+/**
  * Zustand store for high-frequency sensor state
  *
  * This store receives updates at 50Hz from DeviceMotionManager.
@@ -17,6 +22,16 @@ interface SensorState {
   latestData: FilteredSensorData | null;
   /** Whether sensor subscription is active */
   isActive: boolean;
+  /** Smoothed spill risk (0-1) */
+  risk: number;
+  /** True when spill threshold exceeded */
+  isSpill: boolean;
+  /** Current jerk magnitude for debugging/display */
+  jerkMagnitude: number;
+  /** True during startup calibration period */
+  isSettling: boolean;
+  /** Current difficulty level */
+  difficulty: DifficultyLevel;
 }
 
 interface SensorActions {
@@ -24,6 +39,12 @@ interface SensorActions {
   setLatestData: (data: FilteredSensorData) => void;
   /** Set sensor active state */
   setActive: (active: boolean) => void;
+  /** Update risk values from pipeline */
+  updateRisk: (risk: number, isSpill: boolean, jerkMagnitude: number) => void;
+  /** Set settling state */
+  setSettling: (isSettling: boolean) => void;
+  /** Set difficulty level */
+  setDifficulty: (difficulty: DifficultyLevel) => void;
   /** Reset store to initial state */
   reset: () => void;
 }
@@ -33,7 +54,20 @@ type SensorStore = SensorState & SensorActions;
 const initialState: SensorState = {
   latestData: null,
   isActive: false,
+  risk: 0,
+  isSpill: false,
+  jerkMagnitude: 0,
+  isSettling: false,
+  difficulty: 'easy',
 };
+
+/**
+ * Settling period duration in milliseconds
+ * Prevents false positives when phone is being mounted
+ *
+ * @see 01-CONTEXT.md: "Brief settling period at startup (1-2 seconds)"
+ */
+export const SETTLING_PERIOD_MS = 1500;
 
 /**
  * Sensor store for real-time motion data
@@ -42,10 +76,14 @@ const initialState: SensorState = {
  * ```typescript
  * // In component
  * const latestData = useSensorStore(state => state.latestData);
- * const isActive = useSensorStore(state => state.isActive);
+ * const risk = useSensorStore(state => state.risk);
+ * const isSettling = useSensorStore(state => state.isSettling);
  *
  * // From DeviceMotionManager callback
  * useSensorStore.getState().setLatestData(filteredData);
+ *
+ * // From SensorPipeline
+ * useSensorStore.getState().updateRisk(risk, isSpill, jerkMagnitude);
  * ```
  */
 export const useSensorStore = create<SensorStore>((set) => ({
@@ -57,6 +95,18 @@ export const useSensorStore = create<SensorStore>((set) => ({
 
   setActive: (active: boolean) => {
     set({ isActive: active });
+  },
+
+  updateRisk: (risk: number, isSpill: boolean, jerkMagnitude: number) => {
+    set({ risk, isSpill, jerkMagnitude });
+  },
+
+  setSettling: (isSettling: boolean) => {
+    set({ isSettling });
+  },
+
+  setDifficulty: (difficulty: DifficultyLevel) => {
+    set({ difficulty });
   },
 
   reset: () => {
