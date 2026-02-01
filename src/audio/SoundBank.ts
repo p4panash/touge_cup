@@ -9,10 +9,10 @@ import { SoundName, SOUND_NAMES } from './types';
  * Using require() for Metro bundler compatibility.
  */
 const SOUND_ASSETS: Record<SoundName, number> = {
-  'slosh-light': require('@/assets/audio/slosh-light.m4a'),
-  'slosh-medium': require('@/assets/audio/slosh-medium.m4a'),
-  'slosh-heavy': require('@/assets/audio/slosh-heavy.m4a'),
-  spill: require('@/assets/audio/spill.m4a'),
+  'slosh-light': require('../../assets/audio/slosh-light.m4a'),
+  'slosh-medium': require('../../assets/audio/slosh-medium.m4a'),
+  'slosh-heavy': require('../../assets/audio/slosh-heavy.m4a'),
+  spill: require('../../assets/audio/spill.m4a'),
 };
 
 /**
