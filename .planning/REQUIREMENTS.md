@@ -17,8 +17,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Smoothness Engine
 
-- [ ] **SMTH-01**: Jerk calculation per axis (ΔG / Δt) measures rate of G-force change
-- [ ] **SMTH-02**: Combined jerk computed via RMS (√(jerkLat² + jerkLong²))
+- [ ] **SMTH-01**: Jerk calculation per axis (dG / dt) measures rate of G-force change
+- [ ] **SMTH-02**: Combined jerk computed via RMS (sqrt(jerkLat^2 + jerkLong^2))
 - [ ] **SMTH-03**: Spill risk normalization produces 0-1 value based on jerk vs threshold
 - [ ] **SMTH-04**: Rolling window (~500ms) smooths transient spikes
 - [ ] **SMTH-05**: Three difficulty levels with distinct thresholds (Easy: 0.5 G/s, Experienced: 0.3 G/s, Master: 0.15 G/s)
@@ -85,7 +85,7 @@ Deferred to future release. Tracked but not in current roadmap.
 - **OBDI-01**: Bluetooth LE connection to OBD-II adapter
 - **OBDI-02**: Vehicle speed from OBD replaces/supplements GPS
 - **OBDI-03**: Throttle position monitoring for throttle smoothness
-- **OBDI-04**: Tiered data source approach (OBD → phone sensors fallback)
+- **OBDI-04**: Tiered data source approach (OBD -> phone sensors fallback)
 
 ### Analytics
 
@@ -115,48 +115,48 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SENS-01 | TBD | Pending |
-| SENS-02 | TBD | Pending |
-| SENS-03 | TBD | Pending |
-| SENS-04 | TBD | Pending |
-| SENS-05 | TBD | Pending |
-| SMTH-01 | TBD | Pending |
-| SMTH-02 | TBD | Pending |
-| SMTH-03 | TBD | Pending |
-| SMTH-04 | TBD | Pending |
-| SMTH-05 | TBD | Pending |
-| POTH-01 | TBD | Pending |
-| POTH-02 | TBD | Pending |
-| AUDI-01 | TBD | Pending |
-| AUDI-02 | TBD | Pending |
-| AUDI-03 | TBD | Pending |
-| AUDI-04 | TBD | Pending |
-| AUDI-05 | TBD | Pending |
-| DRIV-01 | TBD | Pending |
-| DRIV-02 | TBD | Pending |
-| DRIV-03 | TBD | Pending |
-| DRIV-04 | TBD | Pending |
-| DRIV-05 | TBD | Pending |
-| SCOR-01 | TBD | Pending |
-| SCOR-02 | TBD | Pending |
-| SCOR-03 | TBD | Pending |
-| SCOR-04 | TBD | Pending |
-| SCRN-01 | TBD | Pending |
-| SCRN-02 | TBD | Pending |
-| SCRN-03 | TBD | Pending |
-| SCRN-04 | TBD | Pending |
-| SCRN-05 | TBD | Pending |
-| PLAT-01 | TBD | Pending |
-| PLAT-02 | TBD | Pending |
-| PLAT-03 | TBD | Pending |
-| PLAT-04 | TBD | Pending |
-| PLAT-05 | TBD | Pending |
+| SENS-01 | Phase 1 | Pending |
+| SENS-02 | Phase 1 | Pending |
+| SENS-03 | Phase 2 | Pending |
+| SENS-04 | Phase 1 | Pending |
+| SENS-05 | Phase 1 | Pending |
+| SMTH-01 | Phase 1 | Pending |
+| SMTH-02 | Phase 1 | Pending |
+| SMTH-03 | Phase 1 | Pending |
+| SMTH-04 | Phase 1 | Pending |
+| SMTH-05 | Phase 5 | Pending |
+| POTH-01 | Phase 5 | Pending |
+| POTH-02 | Phase 5 | Pending |
+| AUDI-01 | Phase 1 | Pending |
+| AUDI-02 | Phase 1 | Pending |
+| AUDI-03 | Phase 5 | Pending |
+| AUDI-04 | Phase 1 | Pending |
+| AUDI-05 | Phase 1 | Pending |
+| DRIV-01 | Phase 2 | Pending |
+| DRIV-02 | Phase 2 | Pending |
+| DRIV-03 | Phase 2 | Pending |
+| DRIV-04 | Phase 3 | Pending |
+| DRIV-05 | Phase 3 | Pending |
+| SCOR-01 | Phase 3 | Pending |
+| SCOR-02 | Phase 3 | Pending |
+| SCOR-03 | Phase 3 | Pending |
+| SCOR-04 | Phase 3 | Pending |
+| SCRN-01 | Phase 4 | Pending |
+| SCRN-02 | Phase 4 | Pending |
+| SCRN-03 | Phase 4 | Pending |
+| SCRN-04 | Phase 4 | Pending |
+| SCRN-05 | Phase 4 | Pending |
+| PLAT-01 | Phase 4 | Pending |
+| PLAT-02 | Phase 4 | Pending |
+| PLAT-03 | Phase 2 | Pending |
+| PLAT-04 | Phase 3 | Pending |
+| PLAT-05 | Phase 2 | Pending |
 
 **Coverage:**
-- v1 requirements: 35 total
-- Mapped to phases: 0
-- Unmapped: 35 ⚠️
+- v1 requirements: 36 total
+- Mapped to phases: 36
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after initial definition*
+*Last updated: 2026-02-01 after roadmap creation*
