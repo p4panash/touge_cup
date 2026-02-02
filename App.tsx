@@ -11,6 +11,8 @@ import { audioEngine } from '@/audio/AudioEngine';
 import { useSensorPipeline } from '@/hooks/useSensorPipeline';
 import { useAudioFeedback } from '@/hooks/useAudioFeedback';
 import { useSensorStore } from '@/stores/useSensorStore';
+import { useDriveDetection } from '@/hooks/useDriveDetection';
+import { useDriveStore, isDriving as isDrivingState } from '@/stores/useDriveStore';
 
 /**
  * Loading screen shown during audio engine initialization
@@ -80,6 +82,140 @@ function RiskDisplay({
 }
 
 /**
+ * Drive status display component
+ */
+function DriveStatusDisplay() {
+  const { requestPermissions, startManual, stopManual, isDriving } = useDriveDetection();
+  const permissionStatus = useDriveStore((s) => s.permissionStatus);
+  const currentSpeed = useDriveStore((s) => s.currentSpeed);
+  const driveState = useDriveStore((s) => s.driveState);
+  const hasGpsSignal = useDriveStore((s) => s.hasGpsSignal);
+
+  // Convert speed to km/h for display
+  const speedKmh = (currentSpeed * 3.6).toFixed(1);
+
+  // Get display label for drive state
+  const getStateLabel = () => {
+    switch (driveState.type) {
+      case 'idle':
+        return 'Idle';
+      case 'detecting':
+        return 'Detecting...';
+      case 'driving':
+        return 'Driving';
+      case 'stopping':
+        return 'Stopping (2min)';
+      case 'manual_driving':
+        return 'Manual Drive';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  const getStateColor = () => {
+    switch (driveState.type) {
+      case 'idle':
+        return '#888888';
+      case 'detecting':
+        return '#ffaa00';
+      case 'driving':
+        return '#00ff00';
+      case 'stopping':
+        return '#ffaa00';
+      case 'manual_driving':
+        return '#00d4ff';
+      default:
+        return '#888888';
+    }
+  };
+
+  const getPermissionLabel = () => {
+    switch (permissionStatus) {
+      case 'undetermined':
+        return 'Not Requested';
+      case 'foreground_only':
+        return 'Foreground Only';
+      case 'background_granted':
+        return 'Background Granted';
+      case 'denied':
+        return 'Denied';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  const getPermissionColor = () => {
+    switch (permissionStatus) {
+      case 'background_granted':
+        return '#00ff00';
+      case 'foreground_only':
+        return '#ffaa00';
+      case 'denied':
+        return '#ff4444';
+      default:
+        return '#888888';
+    }
+  };
+
+  return (
+    <View style={styles.driveContainer}>
+      <Text style={styles.sectionTitle}>Drive Detection</Text>
+
+      <View style={styles.statusRow}>
+        <Text style={styles.statusLabel}>Permission:</Text>
+        <Text style={[styles.statusValue, { color: getPermissionColor() }]}>
+          {getPermissionLabel()}
+        </Text>
+      </View>
+
+      {permissionStatus !== 'background_granted' && permissionStatus !== 'denied' && (
+        <TouchableOpacity
+          style={styles.permissionButton}
+          onPress={requestPermissions}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.permissionButtonText}>Request Location Permission</Text>
+        </TouchableOpacity>
+      )}
+
+      <View style={styles.statusRow}>
+        <Text style={styles.statusLabel}>GPS Speed:</Text>
+        <Text style={[styles.statusValue, { color: hasGpsSignal ? '#ffffff' : '#666666' }]}>
+          {hasGpsSignal ? `${speedKmh} km/h` : 'No Signal'}
+        </Text>
+      </View>
+
+      <View style={styles.statusRow}>
+        <Text style={styles.statusLabel}>Drive State:</Text>
+        <Text style={[styles.statusValue, { color: getStateColor() }]}>
+          {getStateLabel()}
+        </Text>
+      </View>
+
+      <View style={styles.driveButtonRow}>
+        {!isDriving ? (
+          <TouchableOpacity
+            style={[styles.driveButton, { backgroundColor: '#00d4ff' }]}
+            onPress={startManual}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.driveButtonText}>Start Drive</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.driveButton, { backgroundColor: '#ff4444' }]}
+            onPress={stopManual}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.driveButtonText}>Stop Drive</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+}
+
+/**
  * Main screen with sensor pipeline controls and debug display
  */
 function MainScreen() {
@@ -92,7 +228,11 @@ function MainScreen() {
       <Text style={styles.title}>Water Cup Coach</Text>
       <Text style={styles.subtitle}>Debug Mode</Text>
 
+      <DriveStatusDisplay />
+
       <View style={styles.statusContainer}>
+        <Text style={styles.sectionTitle}>Sensor Pipeline</Text>
+
         <View style={styles.statusRow}>
           <Text style={styles.statusLabel}>Status:</Text>
           <Text
@@ -158,13 +298,13 @@ function MainScreen() {
         onPress={isActive ? stop : start}
         activeOpacity={0.7}
       >
-        <Text style={styles.buttonText}>{isActive ? 'Stop' : 'Start'}</Text>
+        <Text style={styles.buttonText}>{isActive ? 'Stop Sensors' : 'Start Sensors'}</Text>
       </TouchableOpacity>
 
       <Text style={styles.hint}>
         {isActive
           ? 'Move your phone to test audio feedback'
-          : 'Press Start to begin sensor tracking'}
+          : 'Press Start Sensors to begin tracking'}
       </Text>
 
       <StatusBar style="light" />
@@ -227,19 +367,32 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#888888',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   loadingText: {
     fontSize: 16,
     color: '#888888',
     marginTop: 16,
   },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 12,
+  },
+  driveContainer: {
+    backgroundColor: '#2a2a4e',
+    borderRadius: 12,
+    padding: 16,
+    width: '100%',
+    marginBottom: 16,
+  },
   statusContainer: {
     backgroundColor: '#2a2a4e',
     borderRadius: 12,
     padding: 16,
     width: '100%',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   statusRow: {
     flexDirection: 'row',
@@ -255,12 +408,40 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '600',
   },
+  permissionButton: {
+    backgroundColor: '#3a3a5e',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  permissionButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#00d4ff',
+  },
+  driveButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  driveButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  driveButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
   riskContainer: {
     backgroundColor: '#2a2a4e',
     borderRadius: 12,
     padding: 16,
     width: '100%',
-    marginBottom: 24,
+    marginBottom: 16,
     alignItems: 'center',
   },
   label: {
