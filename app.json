@@ -14,7 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.papanash.watercupcoach"
+      "bundleIdentifier": "com.papanash.watercupcoach",
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "audio"],
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Water Cup Coach needs continuous location access to detect when you're driving and provide real-time feedback.",
+        "NSLocationWhenInUseUsageDescription": "Water Cup Coach uses your location to detect driving speed."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +30,11 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.HIGH_SAMPLING_RATE_SENSORS",
-        "android.permission.HIGH_SAMPLING_RATE_SENSORS"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
       ],
       "package": "com.papanash.watercupcoach"
     },
@@ -33,7 +42,16 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Water Cup Coach needs continuous location access to detect when you're driving and provide real-time feedback.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ]
     ]
   }
 }
