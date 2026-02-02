@@ -96,4 +96,4 @@ Stopped at: Completed 03-04-PLAN.md (Phase 3 gap closure complete)
 Resume file: None
 
 ---
-*Next step: Begin Phase 4 - History UI*
+*Next step: /gsd:discuss-phase 4 - UI & User Experience*

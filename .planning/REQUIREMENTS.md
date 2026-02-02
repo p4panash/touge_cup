@@ -41,15 +41,15 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **DRIV-01**: Auto-start when GPS speed > 15 km/h for 5+ seconds
 - [ ] **DRIV-02**: Auto-stop when GPS speed < 5 km/h for 60+ seconds
 - [ ] **DRIV-03**: Manual start/stop override always available
-- [ ] **DRIV-04**: GPS breadcrumbs recorded every 5 seconds during drive
-- [ ] **DRIV-05**: Events logged with timestamp, type, location, and severity
+- [x] **DRIV-04**: GPS breadcrumbs recorded every 5 seconds during drive
+- [x] **DRIV-05**: Events logged with timestamp, type, location, and severity
 
 ### Scoring & Metrics
 
-- [ ] **SCOR-01**: Smoothness score (0-100) calculated for each drive
-- [ ] **SCOR-02**: Spill count tracked per drive
-- [ ] **SCOR-03**: Pothole count tracked per drive
-- [ ] **SCOR-04**: Event severity tracked (how far over threshold)
+- [x] **SCOR-01**: Smoothness score (0-100) calculated for each drive
+- [x] **SCOR-02**: Spill count tracked per drive
+- [x] **SCOR-03**: Pothole count tracked per drive
+- [x] **SCOR-04**: Event severity tracked (how far over threshold)
 
 ### App Screens
 
@@ -64,7 +64,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **PLAT-01**: App runs on iOS via React Native / Expo
 - [ ] **PLAT-02**: App runs on Android via React Native / Expo
 - [ ] **PLAT-03**: Background execution allows drive detection and recording with screen off
-- [ ] **PLAT-04**: SQLite database stores drive history and events locally
+- [x] **PLAT-04**: SQLite database stores drive history and events locally
 - [ ] **PLAT-05**: Battery-efficient background operation (<10% for 1-hour drive)
 
 ## v2 Requirements
