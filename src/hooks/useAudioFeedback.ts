@@ -24,6 +24,7 @@ export function useAudioFeedback() {
   const triggerRef = useRef<FeedbackTrigger>(new FeedbackTrigger());
   const [isSpillOnCooldown, setIsSpillOnCooldown] = useState(false);
   const [currentZone, setCurrentZone] = useState<RiskZone>('silent');
+  const [lastPlayedSound, setLastPlayedSound] = useState<string | null>(null);
 
   // Sensor store selectors
   const risk = useSensorStore((state) => state.risk);
@@ -53,6 +54,7 @@ export function useAudioFeedback() {
     // Play if sound was selected
     if (sound) {
       audioEngine.play(sound);
+      setLastPlayedSound(sound);
     }
   }, [risk, isSpill, isActive, isSettling, isAudioInterrupted]);
 
@@ -61,6 +63,7 @@ export function useAudioFeedback() {
     if (!isActive) {
       triggerRef.current.reset();
       setCurrentZone('silent');
+      setLastPlayedSound(null);
     }
   }, [isActive]);
 
@@ -72,11 +75,13 @@ export function useAudioFeedback() {
   }, []);
 
   return {
-    /** Current last played sound (for debugging) */
-    lastPlayedSound: triggerRef.current.getLastPlayedSound(),
+    /** Current last played sound (reactive) */
+    lastPlayedSound,
     /** Whether spill is on cooldown (reactive) */
     isSpillOnCooldown,
     /** Current risk zone (for UI display) */
     currentZone,
+    /** Whether in recovery period (needs low risk before next spill) */
+    isRecovering: triggerRef.current.isSpillOnCooldown() && !isSpillOnCooldown,
   };
 }

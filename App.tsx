@@ -84,7 +84,8 @@ function RiskDisplay({
  */
 function MainScreen() {
   const { isActive, isSettling, start, stop } = useSensorPipeline();
-  const { lastPlayedSound, isSpillOnCooldown, currentZone } = useAudioFeedback();
+  const { lastPlayedSound, isSpillOnCooldown, currentZone, isRecovering } =
+    useAudioFeedback();
 
   return (
     <View style={styles.container}>
@@ -123,11 +124,25 @@ function MainScreen() {
           </View>
         )}
 
+        <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Zone:</Text>
+          <Text style={styles.statusValue}>{currentZone}</Text>
+        </View>
+
         {isSpillOnCooldown && (
           <View style={styles.statusRow}>
             <Text style={styles.statusLabel}>Spill Cooldown:</Text>
             <Text style={[styles.statusValue, { color: '#ff4444' }]}>
               Active
+            </Text>
+          </View>
+        )}
+
+        {isRecovering && (
+          <View style={styles.statusRow}>
+            <Text style={styles.statusLabel}>Recovery:</Text>
+            <Text style={[styles.statusValue, { color: '#ffaa00' }]}>
+              Needs low risk
             </Text>
           </View>
         )}

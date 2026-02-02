@@ -19,12 +19,20 @@ class SpillCooldown {
   private cooldownMs = 2500;
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
   private onChangeCallback: CooldownChangeCallback | null = null;
+  private onCooldownEndCallback: (() => void) | null = null;
 
   /**
    * Set callback for cooldown state changes
    */
   onChange(callback: CooldownChangeCallback): void {
     this.onChangeCallback = callback;
+  }
+
+  /**
+   * Set callback for when cooldown ends (to reset zone tracking)
+   */
+  onCooldownEnd(callback: () => void): void {
+    this.onCooldownEndCallback = callback;
   }
 
   /**
@@ -74,6 +82,8 @@ class SpillCooldown {
       this.timeoutId = null;
       this.onChangeCallback?.(false);
       // Note: requiresRecovery stays true until signalRecovery() is called
+      // Zone reset callback will be called by FeedbackTrigger
+      this.onCooldownEndCallback?.();
     }, this.cooldownMs);
   }
 
@@ -142,6 +152,13 @@ export class FeedbackTrigger {
 
   /** Minimum time between sounds (prevents rapid-fire) */
   private readonly minSoundIntervalMs = 300;
+
+  constructor() {
+    // Reset zone tracking when cooldown ends so sounds can trigger again
+    this.spillCooldown.onCooldownEnd(() => {
+      this.currentZone = 'silent';
+    });
+  }
 
   /**
    * Set callback for cooldown state changes
