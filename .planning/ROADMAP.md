@@ -82,12 +82,13 @@ Plans:
   3. Drive summary screen displays map with route polyline and event markers
   4. History screen lists past drives with filtering by difficulty and sorting options
   5. Settings screen allows difficulty selection, volume adjustment, and sensor calibration
-**Plans**: TBD
+**Plans:** 4 plans in 2 waves
 
 Plans:
-- [ ] 04-01: Home and active drive screens
-- [ ] 04-02: Drive summary and history screens
-- [ ] 04-03: Settings screen and onboarding flow
+- [ ] 04-01-PLAN.md — Navigation infrastructure with expo-router, theme system, tab navigation
+- [ ] 04-02-PLAN.md — Home screen (hero button, difficulty selector, recent drive) + Active drive screen (water cup animation, spill counter, streak timer)
+- [ ] 04-03-PLAN.md — Drive summary screen with map, color-coded polyline, spill markers, stats breakdown
+- [ ] 04-04-PLAN.md — History screen with filtering/sorting + Settings screen with preferences
 
 ### Phase 5: Algorithm Refinement
 **Goal**: Smoothness detection adapts to user skill level and forgives road imperfections
@@ -114,7 +115,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 4/4 | Complete | 2026-02-03 |
-| 4. UI & User Experience | 0/3 | Not started | - |
+| 4. UI & User Experience | 0/4 | Planned | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
 
 ---
@@ -122,5 +123,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 *Phase 1 planned: 2026-02-01*
 *Phase 2 planned: 2026-02-02*
 *Phase 3 planned: 2026-02-02*
-*Total plans: 14 (estimated, refined during planning)*
+*Phase 4 planned: 2026-02-03*
+*Total plans: 16 (estimated, refined during planning)*
 *Total v1 requirements: 36 mapped*
