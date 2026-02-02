@@ -44,9 +44,10 @@ export class AudioEngine {
     }
 
     // Configure audio mode - start with MixWithOthers, switch to DuckOthers when playing
+    // staysActiveInBackground: true enables audio playback with screen off
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
-      staysActiveInBackground: false,
+      staysActiveInBackground: true,
       interruptionModeIOS: InterruptionModeIOS.MixWithOthers,
       shouldDuckAndroid: false,
       playThroughEarpieceAndroid: false,
@@ -98,7 +99,7 @@ export class AudioEngine {
 
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
-      staysActiveInBackground: false,
+      staysActiveInBackground: true,
       interruptionModeIOS: InterruptionModeIOS.DuckOthers,
       shouldDuckAndroid: true,
       playThroughEarpieceAndroid: false,
@@ -111,7 +112,7 @@ export class AudioEngine {
 
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
-      staysActiveInBackground: false,
+      staysActiveInBackground: true,
       interruptionModeIOS: InterruptionModeIOS.MixWithOthers,
       shouldDuckAndroid: false,
       playThroughEarpieceAndroid: false,
