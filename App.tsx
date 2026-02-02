@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { audioEngine } from '@/audio/AudioEngine';
+import { useDatabaseMigrations } from '@/db/client';
 import { useSensorPipeline } from '@/hooks/useSensorPipeline';
 import { useAudioFeedback } from '@/hooks/useAudioFeedback';
 import { useSensorStore } from '@/stores/useSensorStore';
@@ -272,6 +273,36 @@ function DebugLogViewer() {
 }
 
 /**
+ * Database initialization wrapper
+ * Runs migrations before allowing app to render
+ */
+function DatabaseProvider({ children }: { children: React.ReactNode }) {
+  const { success, error } = useDatabaseMigrations();
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorTitle}>Database Error</Text>
+        <Text style={styles.errorText}>{error.message}</Text>
+        <StatusBar style="light" />
+      </View>
+    );
+  }
+
+  if (!success) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#00d4ff" />
+        <Text style={styles.loadingText}>Initializing database...</Text>
+        <StatusBar style="light" />
+      </View>
+    );
+  }
+
+  return <>{children}</>;
+}
+
+/**
  * Main screen with drive controls and debug display
  */
 function MainScreen() {
@@ -378,10 +409,11 @@ function MainScreen() {
 }
 
 /**
- * Root app component
+ * App content component
  * Initializes audio engine before rendering main content
+ * Database must be initialized before this component mounts
  */
-export default function App() {
+function AppContent() {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -413,6 +445,23 @@ export default function App() {
   }
 
   return <MainScreen />;
+}
+
+/**
+ * Root app component
+ * Initializes database before audio engine and main content
+ *
+ * Initialization order:
+ * 1. Database migrations (DatabaseProvider)
+ * 2. Audio engine (AppContent)
+ * 3. Main content (MainScreen)
+ */
+export default function App() {
+  return (
+    <DatabaseProvider>
+      <AppContent />
+    </DatabaseProvider>
+  );
 }
 
 const styles = StyleSheet.create({
