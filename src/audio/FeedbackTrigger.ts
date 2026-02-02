@@ -1,6 +1,11 @@
 import { SoundName } from './types';
 
 /**
+ * Callback for cooldown state changes
+ */
+type CooldownChangeCallback = (inCooldown: boolean) => void;
+
+/**
  * Spill cooldown manager
  *
  * Prevents rapid-fire spill sounds after one bad moment.
@@ -10,14 +15,45 @@ import { SoundName } from './types';
  */
 class SpillCooldown {
   private inCooldown = false;
+  private requiresRecovery = false; // Must see low risk before next spill
   private cooldownMs = 2500;
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
+  private onChangeCallback: CooldownChangeCallback | null = null;
+
+  /**
+   * Set callback for cooldown state changes
+   */
+  onChange(callback: CooldownChangeCallback): void {
+    this.onChangeCallback = callback;
+  }
 
   /**
    * Check if spill can be triggered
+   * Requires: not in cooldown AND recovered (saw low risk)
    */
   canTriggerSpill(): boolean {
-    return !this.inCooldown;
+    return !this.inCooldown && !this.requiresRecovery;
+  }
+
+  /**
+   * Get current cooldown state
+   */
+  isInCooldown(): boolean {
+    return this.inCooldown;
+  }
+
+  /**
+   * Signal that risk has dropped low - recovery complete
+   */
+  signalRecovery(): void {
+    this.requiresRecovery = false;
+  }
+
+  /**
+   * Check if in recovery period (waiting for low risk)
+   */
+  isRecovering(): boolean {
+    return this.requiresRecovery;
   }
 
   /**
@@ -25,6 +61,8 @@ class SpillCooldown {
    */
   startCooldown(): void {
     this.inCooldown = true;
+    this.requiresRecovery = true; // Will require recovery after cooldown
+    this.onChangeCallback?.(true);
 
     // Clear any existing timeout
     if (this.timeoutId) {
@@ -34,6 +72,8 @@ class SpillCooldown {
     this.timeoutId = setTimeout(() => {
       this.inCooldown = false;
       this.timeoutId = null;
+      this.onChangeCallback?.(false);
+      // Note: requiresRecovery stays true until signalRecovery() is called
     }, this.cooldownMs);
   }
 
@@ -45,7 +85,12 @@ class SpillCooldown {
       clearTimeout(this.timeoutId);
       this.timeoutId = null;
     }
+    const wasInCooldown = this.inCooldown;
     this.inCooldown = false;
+    this.requiresRecovery = false;
+    if (wasInCooldown) {
+      this.onChangeCallback?.(false);
+    }
   }
 }
 
@@ -56,7 +101,24 @@ const RISK_THRESHOLDS = {
   light: 0.3, // risk >= 0.3: slosh-light
   medium: 0.5, // risk >= 0.5: slosh-medium
   heavy: 0.7, // risk >= 0.7: slosh-heavy
+  spill: 0.9, // risk >= 0.9: allow spill (smoothed risk must be high too)
 } as const;
+
+/**
+ * Risk zones for threshold-crossing detection
+ */
+export type RiskZone = 'silent' | 'light' | 'medium' | 'heavy' | 'spill';
+
+/**
+ * Get the current risk zone based on risk value
+ */
+function getRiskZone(risk: number, isSpill: boolean): RiskZone {
+  if (isSpill && risk >= RISK_THRESHOLDS.spill) return 'spill';
+  if (risk >= RISK_THRESHOLDS.heavy) return 'heavy';
+  if (risk >= RISK_THRESHOLDS.medium) return 'medium';
+  if (risk >= RISK_THRESHOLDS.light) return 'light';
+  return 'silent';
+}
 
 /**
  * Feedback trigger that maps risk values to sounds
@@ -76,12 +138,24 @@ export class FeedbackTrigger {
   private spillCooldown = new SpillCooldown();
   private lastPlayedSound: SoundName | null = null;
   private lastTriggerTime: number = 0;
+  private currentZone: RiskZone = 'silent';
 
-  /** Minimum time between same sound (prevents rapid repeats) */
-  private readonly minRepeatIntervalMs = 200;
+  /** Minimum time between sounds (prevents rapid-fire) */
+  private readonly minSoundIntervalMs = 300;
+
+  /**
+   * Set callback for cooldown state changes
+   * Used for reactive UI updates
+   */
+  onCooldownChange(callback: (inCooldown: boolean) => void): void {
+    this.spillCooldown.onChange(callback);
+  }
 
   /**
    * Evaluate risk and determine which sound to play
+   *
+   * Uses threshold-crossing detection: sounds only play when
+   * ENTERING a new risk zone, not continuously while in a zone.
    *
    * @param risk - Smoothed risk value (0-1)
    * @param isSpill - True if spill threshold exceeded
@@ -89,45 +163,61 @@ export class FeedbackTrigger {
    */
   evaluate(risk: number, isSpill: boolean): SoundName | null {
     const now = Date.now();
+    const timeSinceLastSound = now - this.lastTriggerTime;
 
-    // Handle spill (overrides risk-based selection)
-    if (isSpill) {
+    // Check if risk dropped low enough to signal recovery
+    if (risk < RISK_THRESHOLDS.light && this.spillCooldown.isRecovering()) {
+      this.spillCooldown.signalRecovery();
+    }
+
+    // Determine current zone
+    const newZone = getRiskZone(risk, isSpill);
+    const previousZone = this.currentZone;
+    this.currentZone = newZone;
+
+    // Only trigger sounds on zone TRANSITIONS (entering a worse zone)
+    // Silent zone transitions don't count
+    if (newZone === previousZone || newZone === 'silent') {
+      return null;
+    }
+
+    // Minimum interval between any sounds
+    if (timeSinceLastSound < this.minSoundIntervalMs) {
+      return null;
+    }
+
+    // Handle spill zone
+    if (newZone === 'spill') {
+      // Only if we can trigger (not in cooldown AND recovered)
       if (this.spillCooldown.canTriggerSpill()) {
         this.spillCooldown.startCooldown();
         this.lastPlayedSound = 'spill';
         this.lastTriggerTime = now;
         return 'spill';
       }
-      // In cooldown, fall through to risk-based selection
-    }
-
-    // Determine sound based on risk thresholds
-    let selectedSound: SoundName | null = null;
-
-    if (risk >= RISK_THRESHOLDS.heavy) {
-      selectedSound = 'slosh-heavy';
-    } else if (risk >= RISK_THRESHOLDS.medium) {
-      selectedSound = 'slosh-medium';
-    } else if (risk >= RISK_THRESHOLDS.light) {
-      selectedSound = 'slosh-light';
-    }
-
-    // Silence below threshold (smooth driving)
-    if (selectedSound === null) {
-      this.lastPlayedSound = null;
       return null;
     }
 
-    // Prevent rapid repeats of same sound
-    if (
-      selectedSound === this.lastPlayedSound &&
-      now - this.lastTriggerTime < this.minRepeatIntervalMs
-    ) {
+    // During spill cooldown, suppress slosh sounds too
+    if (this.spillCooldown.isInCooldown()) {
       return null;
     }
 
-    this.lastPlayedSound = selectedSound;
-    this.lastTriggerTime = now;
+    // Map zone to sound
+    const zoneToSound: Record<RiskZone, SoundName | null> = {
+      silent: null,
+      light: 'slosh-light',
+      medium: 'slosh-medium',
+      heavy: 'slosh-heavy',
+      spill: 'spill',
+    };
+
+    const selectedSound = zoneToSound[newZone];
+    if (selectedSound) {
+      this.lastPlayedSound = selectedSound;
+      this.lastTriggerTime = now;
+    }
+
     return selectedSound;
   }
 
@@ -146,11 +236,19 @@ export class FeedbackTrigger {
   }
 
   /**
+   * Get current risk zone (for UI display)
+   */
+  getCurrentZone(): RiskZone {
+    return this.currentZone;
+  }
+
+  /**
    * Reset trigger state (for new session)
    */
   reset(): void {
     this.spillCooldown.reset();
     this.lastPlayedSound = null;
     this.lastTriggerTime = 0;
+    this.currentZone = 'silent';
   }
 }

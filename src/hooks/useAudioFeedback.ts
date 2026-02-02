@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSensorStore } from '../stores/useSensorStore';
 import { useAudioStore } from '../stores/useAudioStore';
 import { audioEngine } from '../audio/AudioEngine';
-import { FeedbackTrigger } from '../audio/FeedbackTrigger';
+import { FeedbackTrigger, RiskZone } from '../audio/FeedbackTrigger';
 
 /**
  * React hook that triggers audio based on risk values
@@ -22,6 +22,8 @@ import { FeedbackTrigger } from '../audio/FeedbackTrigger';
  */
 export function useAudioFeedback() {
   const triggerRef = useRef<FeedbackTrigger>(new FeedbackTrigger());
+  const [isSpillOnCooldown, setIsSpillOnCooldown] = useState(false);
+  const [currentZone, setCurrentZone] = useState<RiskZone>('silent');
 
   // Sensor store selectors
   const risk = useSensorStore((state) => state.risk);
@@ -45,6 +47,9 @@ export function useAudioFeedback() {
     // Evaluate risk and get sound to play
     const sound = triggerRef.current.evaluate(risk, isSpill);
 
+    // Update current zone for UI
+    setCurrentZone(triggerRef.current.getCurrentZone());
+
     // Play if sound was selected
     if (sound) {
       audioEngine.play(sound);
@@ -55,13 +60,23 @@ export function useAudioFeedback() {
   useEffect(() => {
     if (!isActive) {
       triggerRef.current.reset();
+      setCurrentZone('silent');
     }
   }, [isActive]);
+
+  // Set up cooldown state callback for reactive updates
+  useEffect(() => {
+    triggerRef.current.onCooldownChange((inCooldown) => {
+      setIsSpillOnCooldown(inCooldown);
+    });
+  }, []);
 
   return {
     /** Current last played sound (for debugging) */
     lastPlayedSound: triggerRef.current.getLastPlayedSound(),
-    /** Whether spill is on cooldown */
-    isSpillOnCooldown: triggerRef.current.isSpillOnCooldown(),
+    /** Whether spill is on cooldown (reactive) */
+    isSpillOnCooldown,
+    /** Current risk zone (for UI display) */
+    currentZone,
   };
 }

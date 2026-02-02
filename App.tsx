@@ -26,26 +26,34 @@ function LoadingScreen() {
 }
 
 /**
- * Risk display component
- * Shows current risk value and jerk magnitude from sensor store
+ * Zone display labels and colors
  */
-function RiskDisplay() {
+const ZONE_CONFIG = {
+  silent: { label: 'Smooth', color: '#00ff00' },
+  light: { label: 'Light Slosh', color: '#ffff00' },
+  medium: { label: 'Medium Slosh', color: '#ffaa00' },
+  heavy: { label: 'Heavy Slosh', color: '#ff6600' },
+  spill: { label: 'SPILL!', color: '#ff4444' },
+} as const;
+
+/**
+ * Risk display component
+ * Shows current risk value, zone, and jerk magnitude
+ */
+function RiskDisplay({
+  currentZone,
+}: {
+  currentZone: 'silent' | 'light' | 'medium' | 'heavy' | 'spill';
+}) {
   const risk = useSensorStore((state) => state.risk);
   const jerkMagnitude = useSensorStore((state) => state.jerkMagnitude);
-  const isSpill = useSensorStore((state) => state.isSpill);
 
-  // Determine color based on risk level
-  const getRiskColor = () => {
-    if (risk >= 0.7 || isSpill) return '#ff4444';
-    if (risk >= 0.5) return '#ffaa00';
-    if (risk >= 0.3) return '#ffff00';
-    return '#00ff00';
-  };
+  const zoneConfig = ZONE_CONFIG[currentZone];
 
   return (
     <View style={styles.riskContainer}>
       <Text style={styles.label}>Risk Level</Text>
-      <Text style={[styles.riskValue, { color: getRiskColor() }]}>
+      <Text style={[styles.riskValue, { color: zoneConfig.color }]}>
         {(risk * 100).toFixed(0)}%
       </Text>
       <View style={styles.riskBar}>
@@ -54,15 +62,19 @@ function RiskDisplay() {
             styles.riskFill,
             {
               width: `${Math.min(100, risk * 100)}%`,
-              backgroundColor: getRiskColor(),
+              backgroundColor: zoneConfig.color,
             },
           ]}
         />
       </View>
       <Text style={styles.jerkText}>
-        Jerk: {jerkMagnitude.toFixed(2)} m/s^3
+        Jerk: {jerkMagnitude.toFixed(2)} m/s³
       </Text>
-      {isSpill && <Text style={styles.spillText}>SPILL!</Text>}
+      {currentZone !== 'silent' && (
+        <Text style={[styles.zoneText, { color: zoneConfig.color }]}>
+          {zoneConfig.label}
+        </Text>
+      )}
     </View>
   );
 }
@@ -72,7 +84,7 @@ function RiskDisplay() {
  */
 function MainScreen() {
   const { isActive, isSettling, start, stop } = useSensorPipeline();
-  const { lastPlayedSound, isSpillOnCooldown } = useAudioFeedback();
+  const { lastPlayedSound, isSpillOnCooldown, currentZone } = useAudioFeedback();
 
   return (
     <View style={styles.container}>
@@ -121,7 +133,7 @@ function MainScreen() {
         )}
       </View>
 
-      <RiskDisplay />
+      <RiskDisplay currentZone={currentZone} />
 
       <TouchableOpacity
         style={[
@@ -263,10 +275,9 @@ const styles = StyleSheet.create({
     color: '#666666',
     marginTop: 4,
   },
-  spillText: {
+  zoneText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ff4444',
     marginTop: 8,
   },
   button: {

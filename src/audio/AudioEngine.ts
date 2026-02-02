@@ -23,6 +23,8 @@ export class AudioEngine {
   private soundBank: SoundBank;
   private _isInitialized: boolean = false;
   private _isInterrupted: boolean = false;
+  private activeSourceCount: number = 0;
+  private deactivateTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   private constructor() {
     this.soundBank = new SoundBank();
@@ -54,8 +56,8 @@ export class AudioEngine {
     }
 
     // Configure iOS audio session for ducking
-    // This allows our sounds to play alongside music,
-    // briefly reducing music volume instead of cutting it off
+    // 'playback' category with 'duckOthers' reduces other audio volume during our sounds
+    // We'll deactivate the session after sounds finish to restore other audio
     AudioManager.setAudioSessionOptions({
       iosCategory: 'playback',
       iosMode: 'default',
@@ -79,7 +81,8 @@ export class AudioEngine {
    * Play a sound immediately
    *
    * Uses pre-loaded buffer for instant playback.
-   * Fire-and-forget pattern for minimum latency.
+   * Activates audio session (ducking other audio) and deactivates
+   * after all sounds finish to restore other audio volume.
    *
    * @param soundName - Name of sound to play
    */
@@ -100,13 +103,36 @@ export class AudioEngine {
       return;
     }
 
+    // Cancel any pending deactivation since we're playing a new sound
+    if (this.deactivateTimeoutId) {
+      clearTimeout(this.deactivateTimeoutId);
+      this.deactivateTimeoutId = null;
+    }
+
+    // Activate audio session (triggers ducking)
+    if (this.activeSourceCount === 0) {
+      AudioManager.setAudioSessionActivity(true);
+    }
+    this.activeSourceCount++;
+
     // Create buffer source, connect to output, play immediately
     const source = this.audioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(this.audioContext.destination);
     source.start(this.audioContext.currentTime);
 
-    // Fire-and-forget: source auto-disconnects when done
+    // Use setTimeout with buffer duration instead of onEnded (more reliable)
+    const durationMs = buffer.duration * 1000;
+    setTimeout(() => {
+      this.activeSourceCount--;
+      if (this.activeSourceCount === 0) {
+        // Delay deactivation slightly to avoid rapid on/off
+        this.deactivateTimeoutId = setTimeout(() => {
+          AudioManager.setAudioSessionActivity(false);
+          this.deactivateTimeoutId = null;
+        }, 100);
+      }
+    }, durationMs);
   }
 
   /**
