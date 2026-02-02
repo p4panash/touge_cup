@@ -216,12 +216,15 @@ function DriveStatusDisplay() {
 }
 
 /**
- * Main screen with sensor pipeline controls and debug display
+ * Main screen with drive controls and debug display
  */
 function MainScreen() {
-  const { isActive, isSettling, start, stop } = useSensorPipeline();
+  // Sensors auto-start on mount, we just need the state for display
+  const { isActive, isSettling } = useSensorPipeline();
   const { lastPlayedSound, isSpillOnCooldown, currentZone, isRecovering } =
     useAudioFeedback();
+  const driveState = useDriveStore((s) => s.driveState);
+  const isDrivingNow = isDrivingState(driveState);
 
   return (
     <View style={styles.container}>
@@ -241,7 +244,7 @@ function MainScreen() {
               { color: isActive ? '#00ff00' : '#888888' },
             ]}
           >
-            {isActive ? 'Active' : 'Stopped'}
+            {isActive ? 'Active' : 'Starting...'}
           </Text>
         </View>
 
@@ -254,6 +257,18 @@ function MainScreen() {
             ]}
           >
             {isSettling ? 'Yes (calibrating...)' : 'No'}
+          </Text>
+        </View>
+
+        <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Audio Enabled:</Text>
+          <Text
+            style={[
+              styles.statusValue,
+              { color: isDrivingNow ? '#00ff00' : '#888888' },
+            ]}
+          >
+            {isDrivingNow ? 'Yes (driving)' : 'No (start drive first)'}
           </Text>
         </View>
 
@@ -290,21 +305,10 @@ function MainScreen() {
 
       <RiskDisplay currentZone={currentZone} />
 
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: isActive ? '#ff4444' : '#00d4ff' },
-        ]}
-        onPress={isActive ? stop : start}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.buttonText}>{isActive ? 'Stop Sensors' : 'Start Sensors'}</Text>
-      </TouchableOpacity>
-
       <Text style={styles.hint}>
-        {isActive
-          ? 'Move your phone to test audio feedback'
-          : 'Press Start Sensors to begin tracking'}
+        {isDrivingNow
+          ? 'Audio feedback active - drive smoothly!'
+          : 'Start a drive manually or wait for auto-detection at 15 km/h'}
       </Text>
 
       <StatusBar style="light" />
@@ -475,17 +479,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 8,
-  },
-  button: {
-    paddingHorizontal: 48,
-    paddingVertical: 16,
-    borderRadius: 30,
-    marginBottom: 16,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
   },
   hint: {
     fontSize: 14,

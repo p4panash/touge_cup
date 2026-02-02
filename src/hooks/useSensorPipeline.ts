@@ -114,12 +114,13 @@ export function useSensorPipeline() {
     resetStore();
   }, [resetStore]);
 
-  // Cleanup on unmount
+  // Auto-start on mount, cleanup on unmount
   useEffect(() => {
+    start();
     return () => {
       stop();
     };
-  }, [stop]);
+  }, [start, stop]);
 
   // Update pipeline difficulty when it changes
   useEffect(() => {

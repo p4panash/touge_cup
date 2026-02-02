@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSensorStore } from '../stores/useSensorStore';
 import { useAudioStore } from '../stores/useAudioStore';
+import { useDriveStore, isDriving } from '../stores/useDriveStore';
 import { audioEngine } from '../audio/AudioEngine';
 import { FeedbackTrigger, RiskZone } from '../audio/FeedbackTrigger';
 
@@ -32,6 +33,10 @@ export function useAudioFeedback() {
   const isSettling = useSensorStore((state) => state.isSettling);
   const isActive = useSensorStore((state) => state.isActive);
 
+  // Drive store selectors - audio only plays during active drive
+  const driveState = useDriveStore((state) => state.driveState);
+  const isCurrentlyDriving = isDriving(driveState);
+
   // Audio store selectors
   const isAudioInterrupted = useAudioStore((state) => state.isInterrupted);
 
@@ -41,7 +46,8 @@ export function useAudioFeedback() {
     // - Sensors not active
     // - In settling period
     // - Audio interrupted (phone call)
-    if (!isActive || isSettling || isAudioInterrupted) {
+    // - Not in an active drive
+    if (!isActive || isSettling || isAudioInterrupted || !isCurrentlyDriving) {
       return;
     }
 
@@ -56,7 +62,7 @@ export function useAudioFeedback() {
       audioEngine.play(sound);
       setLastPlayedSound(sound);
     }
-  }, [risk, isSpill, isActive, isSettling, isAudioInterrupted]);
+  }, [risk, isSpill, isActive, isSettling, isAudioInterrupted, isCurrentlyDriving]);
 
   // Reset trigger when pipeline restarts
   useEffect(() => {
