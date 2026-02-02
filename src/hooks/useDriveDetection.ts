@@ -64,30 +64,35 @@ export function useDriveDetection() {
   // Handle location updates from background task
   const handleLocationUpdate = useCallback(
     (locations: LocationData[]) => {
-      // Process the latest location
-      const location = locations[locations.length - 1];
-      if (!location) return;
+      if (!locations || locations.length === 0) return;
 
-      // Update store with location data
-      updateLocation(location);
+      // Process ALL locations in batch to avoid missing state transitions
+      for (const location of locations) {
+        // Update store with location data
+        updateLocation(location);
 
-      // Get current state and process through state machine
-      const currentState = useDriveStore.getState().driveState;
-      const { newState, driveStarted, driveEnded } = processLocation(currentState, location);
+        // Get current state and process through state machine
+        const currentState = useDriveStore.getState().driveState;
+        const { newState, driveStarted, driveEnded } = processLocation(currentState, location);
 
-      // Update state if changed
-      if (newState !== currentState) {
-        setDriveState(newState);
+        // Debug logging - shows speed in km/h and current state
+        const speedKmh = ((location.speed ?? 0) * 3.6).toFixed(1);
+        console.log(`[GPS] ${speedKmh} km/h | state: ${currentState.type} -> ${newState.type}`);
 
-        if (driveStarted) {
-          const startTime = 'startTime' in newState ? newState.startTime : Date.now();
-          setDriveStartTime(startTime);
-          console.log('[useDriveDetection] Drive auto-started at speed:', location.speed);
-        }
+        // Update state if changed
+        if (newState !== currentState) {
+          setDriveState(newState);
 
-        if (driveEnded) {
-          setDriveStartTime(null);
-          console.log('[useDriveDetection] Drive auto-stopped after 120s stationary');
+          if (driveStarted) {
+            const startTime = 'startTime' in newState ? newState.startTime : Date.now();
+            setDriveStartTime(startTime);
+            console.log('[useDriveDetection] Drive auto-started at speed:', speedKmh, 'km/h');
+          }
+
+          if (driveEnded) {
+            setDriveStartTime(null);
+            console.log('[useDriveDetection] Drive auto-stopped after 120s stationary');
+          }
         }
       }
     },

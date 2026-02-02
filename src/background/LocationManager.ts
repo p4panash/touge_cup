@@ -45,9 +45,10 @@ export const LocationManager = {
       foregroundService: {
         ...FOREGROUND_SERVICE_CONFIG,
       },
-      // Deferred updates for battery efficiency when driving steadily
-      deferredUpdatesInterval: 5000,
-      deferredUpdatesDistance: 10,
+      // Minimal deferral - we need timely updates for state detection
+      // The 5-second drive detection threshold requires consistent updates
+      deferredUpdatesInterval: 1000,
+      deferredUpdatesDistance: 0,
       // Continue updates even when app is in background
       pausesUpdatesAutomatically: false,
       // Android: Show notification even when system kills app
