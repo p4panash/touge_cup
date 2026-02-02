@@ -16,7 +16,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.papanash.watercupcoach",
       "infoPlist": {
-        "UIBackgroundModes": ["location", "audio"],
+        "UIBackgroundModes": [
+          "location",
+          "audio"
+        ],
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Water Cup Coach needs continuous location access to detect when you're driving and provide real-time feedback.",
         "NSLocationWhenInUseUsageDescription": "Water Cup Coach uses your location to detect driving speed."
       }
@@ -51,7 +54,8 @@
           "isAndroidBackgroundLocationEnabled": true,
           "isAndroidForegroundServiceEnabled": true
         }
-      ]
+      ],
+      "expo-sqlite"
     ]
   }
 }
