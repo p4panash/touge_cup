@@ -12,7 +12,7 @@ This roadmap delivers a driving smoothness coach that uses smartphone sensors to
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Sensor & Audio Foundation** - Validate core differentiators: 50Hz sensor sampling and sub-100ms audio latency
+- [x] **Phase 1: Sensor & Audio Foundation** - Validate core differentiators: 50Hz sensor sampling and sub-100ms audio latency
 - [ ] **Phase 2: Background Execution & Permissions** - Enable drive detection and recording with screen off
 - [ ] **Phase 3: Drive Session Management** - Persist drives, events, and scores to local database
 - [ ] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 01-01-PLAN.md — Project setup + sensor pipeline (DeviceMotion, filtering, Zustand store)
-- [ ] 01-02-PLAN.md — Smoothness engine (jerk calculation, risk normalization, rolling window)
-- [ ] 01-03-PLAN.md — Audio feedback system (pre-loaded buffers, triggers, device verification)
+- [x] 01-01-PLAN.md — Project setup + sensor pipeline (DeviceMotion, filtering, Zustand store)
+- [x] 01-02-PLAN.md — Smoothness engine (jerk calculation, risk normalization, rolling window)
+- [x] 01-03-PLAN.md — Audio feedback system (pre-loaded buffers, triggers, device verification)
 
 ### Phase 2: Background Execution & Permissions
 **Goal**: App detects drives automatically and continues recording with screen off or app backgrounded
@@ -43,16 +43,16 @@ Plans:
 **Requirements**: SENS-03, DRIV-01, DRIV-02, DRIV-03, PLAT-03, PLAT-05
 **Success Criteria** (what must be TRUE):
   1. App auto-starts recording when user drives above 15 km/h for 5+ seconds
-  2. App auto-stops recording when user is stationary for 60+ seconds
+  2. App auto-stops recording when user is stationary for 120+ seconds
   3. User can manually start and stop drives at any time, overriding auto-detection
   4. Drive detection and audio feedback continue working with screen off for 30+ minutes
   5. Battery consumption is under 10% for a 1-hour drive
-**Plans**: TBD
+**Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 02-01: GPS integration and speed monitoring
-- [ ] 02-02: Background modes and foreground service implementation
-- [ ] 02-03: Auto-start/stop logic and permission flow
+- [ ] 02-01-PLAN.md — Install packages, configure app.json, create drive types/constants
+- [ ] 02-02-PLAN.md — Background task registry, LocationManager, PermissionManager, useDriveStore
+- [ ] 02-03-PLAN.md — Drive state machine, useDriveDetection hook, App integration, device verification
 
 ### Phase 3: Drive Session Management
 **Goal**: Drives are persisted with route data, events, and scores that survive app restarts
@@ -110,8 +110,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Sensor & Audio Foundation | 0/3 | Planned | - |
-| 2. Background Execution & Permissions | 0/3 | Not started | - |
+| 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
+| 2. Background Execution & Permissions | 0/3 | Planned | - |
 | 3. Drive Session Management | 0/3 | Not started | - |
 | 4. UI & User Experience | 0/3 | Not started | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
@@ -119,5 +119,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 ---
 *Roadmap created: 2026-02-01*
 *Phase 1 planned: 2026-02-01*
+*Phase 2 planned: 2026-02-02*
 *Total plans: 14 (estimated, refined during planning)*
 *Total v1 requirements: 36 mapped*
