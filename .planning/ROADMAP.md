@@ -13,7 +13,7 @@ This roadmap delivers a driving smoothness coach that uses smartphone sensors to
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Sensor & Audio Foundation** - Validate core differentiators: 50Hz sensor sampling and sub-100ms audio latency
-- [ ] **Phase 2: Background Execution & Permissions** - Enable drive detection and recording with screen off
+- [x] **Phase 2: Background Execution & Permissions** - Enable drive detection and recording with screen off
 - [ ] **Phase 3: Drive Session Management** - Persist drives, events, and scores to local database
 - [ ] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
 - [ ] **Phase 5: Algorithm Refinement** - Implement difficulty progression and pothole forgiveness
@@ -50,9 +50,9 @@ Plans:
 **Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 02-01-PLAN.md — Install packages, configure app.json, create drive types/constants
-- [ ] 02-02-PLAN.md — Background task registry, LocationManager, PermissionManager, useDriveStore
-- [ ] 02-03-PLAN.md — Drive state machine, useDriveDetection hook, App integration, device verification
+- [x] 02-01-PLAN.md — Install packages, configure app.json, create drive types/constants
+- [x] 02-02-PLAN.md — Background task registry, LocationManager, PermissionManager, useDriveStore
+- [x] 02-03-PLAN.md — Drive state machine, useDriveDetection hook, App integration, device verification
 
 ### Phase 3: Drive Session Management
 **Goal**: Drives are persisted with route data, events, and scores that survive app restarts
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
-| 2. Background Execution & Permissions | 0/3 | Planned | - |
+| 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 0/3 | Not started | - |
 | 4. UI & User Experience | 0/3 | Not started | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
