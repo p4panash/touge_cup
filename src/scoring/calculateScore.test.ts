@@ -34,10 +34,11 @@ describe('calculateScore', () => {
   });
 
   describe('spill penalties', () => {
+    // Use 4 min duration (0 bonus) to isolate spill penalty testing
     it('deducts 5 points for low severity spill (0.0-0.5)', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: 0.3 }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000, // 4 min = 0 duration bonus
       };
       const result = calculateScore(input);
       expect(result.score).toBe(95);
@@ -47,7 +48,7 @@ describe('calculateScore', () => {
     it('deducts 10 points for medium severity spill (0.5-0.7)', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: 0.6 }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.score).toBe(90);
@@ -57,7 +58,7 @@ describe('calculateScore', () => {
     it('deducts 15 points for high severity spill (0.7-1.0)', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: 0.9 }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.score).toBe(85);
@@ -71,7 +72,7 @@ describe('calculateScore', () => {
           { severity: 0.6 },  // med: -10
           { severity: 0.9 },  // high: -15
         ],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.score).toBe(70);
@@ -83,7 +84,7 @@ describe('calculateScore', () => {
     it('never returns negative score', () => {
       const input: ScoreInput = {
         spillEvents: Array(20).fill({ severity: 0.9 }), // 20 * 15 = 300 penalty
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000, // 4 min = 0 bonus
       };
       const result = calculateScore(input);
       expect(result.score).toBe(0);
@@ -92,7 +93,7 @@ describe('calculateScore', () => {
     it('returns 0 for 10 high-severity spills', () => {
       const input: ScoreInput = {
         spillEvents: Array(10).fill({ severity: 0.9 }), // 10 * 15 = 150 penalty
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.score).toBe(0);
@@ -147,7 +148,7 @@ describe('calculateScore', () => {
     it('treats severity at boundary 0.5 as medium', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: 0.5 }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000, // 4 min = 0 bonus
       };
       const result = calculateScore(input);
       expect(result.breakdown.spillPenalty).toBe(10);
@@ -156,7 +157,7 @@ describe('calculateScore', () => {
     it('treats severity at boundary 0.7 as high', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: 0.7 }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.breakdown.spillPenalty).toBe(15);
@@ -165,7 +166,7 @@ describe('calculateScore', () => {
     it('handles null severity as low', () => {
       const input: ScoreInput = {
         spillEvents: [{ severity: null }],
-        durationMs: 5 * 60 * 1000,
+        durationMs: 4 * 60 * 1000,
       };
       const result = calculateScore(input);
       expect(result.breakdown.spillPenalty).toBe(5);
