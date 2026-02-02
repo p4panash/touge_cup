@@ -12,8 +12,9 @@
  */
 
 import { createDrive, updateDrive } from '../db/queries/drives';
-import { logEvent } from '../db/queries/events';
+import { logEvent, getEventsForDrive } from '../db/queries/events';
 import { logBreadcrumb, getBreadcrumbsForDrive, calculateDistance } from '../db/queries/breadcrumbs';
+import { calculateScore } from '../scoring/calculateScore';
 import type { DifficultyLevel } from '../stores/useSensorStore';
 import type { LocationData } from '../drive/types';
 
@@ -117,18 +118,30 @@ class DriveRecorderClass {
     const breadcrumbs = await getBreadcrumbsForDrive(driveId);
     const distanceMeters = calculateDistance(breadcrumbs);
 
-    // Update drive record with final stats
-    // Note: Score is NOT calculated here - that's Plan 03's job
+    // Get spill events for scoring
+    const events = await getEventsForDrive(driveId);
+    const spillEvents = events
+      .filter(e => e.type === 'spill')
+      .map(e => ({ severity: e.severity }));
+
+    // Calculate score (the "reveal moment" per CONTEXT.md)
+    const scoreResult = calculateScore({
+      spillEvents,
+      durationMs,
+    });
+
+    // Update drive record with final stats INCLUDING score
     await updateDrive(driveId, {
       endTime: params.endTime,
       durationMs,
       distanceMeters,
+      score: scoreResult.score,
       spillCount: this.spillCount,
       potholeCount: this.potholeCount,
       manualEnd: params.manual,
     });
 
-    console.log(`[DriveRecorder] Drive ended: ${driveId}, duration: ${durationMs}ms, distance: ${distanceMeters.toFixed(0)}m, spills: ${this.spillCount}`);
+    console.log(`[DriveRecorder] Drive ended: ${driveId}, score: ${scoreResult.score}${scoreResult.isPerfect ? ' (PERFECT!)' : ''}, spills: ${this.spillCount}`);
 
     // Reset state
     this.currentDriveId = null;
