@@ -1,3 +1,7 @@
+// CRITICAL: Import background task registry FIRST
+// TaskManager.defineTask must run before React initializes
+import './src/background/BackgroundTaskRegistry';
+
 import { registerRootComponent } from 'expo';
 
 import App from './App';
