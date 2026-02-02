@@ -69,10 +69,9 @@ class SpillCooldown {
    */
   startCooldown(): void {
     this.inCooldown = true;
-    this.requiresRecovery = true; // Will require recovery after cooldown
+    this.requiresRecovery = true;
     this.onChangeCallback?.(true);
 
-    // Clear any existing timeout
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
@@ -81,8 +80,6 @@ class SpillCooldown {
       this.inCooldown = false;
       this.timeoutId = null;
       this.onChangeCallback?.(false);
-      // Note: requiresRecovery stays true until signalRecovery() is called
-      // Zone reset callback will be called by FeedbackTrigger
       this.onCooldownEndCallback?.();
     }, this.cooldownMs);
   }
@@ -187,14 +184,18 @@ export class FeedbackTrigger {
       this.spillCooldown.signalRecovery();
     }
 
-    // Determine current zone
+    // Determine current zone based on risk
     const newZone = getRiskZone(risk, isSpill);
     const previousZone = this.currentZone;
-    this.currentZone = newZone;
 
-    // Only trigger sounds on zone TRANSITIONS (entering a worse zone)
-    // Silent zone transitions don't count
-    if (newZone === previousZone || newZone === 'silent') {
+    // Silent zone always updates (no sound needed)
+    if (newZone === 'silent') {
+      this.currentZone = newZone;
+      return null;
+    }
+
+    // Same zone = no transition
+    if (newZone === previousZone) {
       return null;
     }
 
@@ -205,19 +206,21 @@ export class FeedbackTrigger {
 
     // Handle spill zone
     if (newZone === 'spill') {
-      // Only if we can trigger (not in cooldown AND recovered)
       if (this.spillCooldown.canTriggerSpill()) {
+        this.currentZone = newZone;
         this.spillCooldown.startCooldown();
         this.lastPlayedSound = 'spill';
         this.lastTriggerTime = now;
         return 'spill';
       }
-      return null;
-    }
-
-    // During spill cooldown, suppress slosh sounds too
-    if (this.spillCooldown.isInCooldown()) {
-      return null;
+      // Spill blocked - treat as heavy zone instead
+      if (previousZone === 'heavy') {
+        return null;
+      }
+      this.currentZone = 'heavy';
+      this.lastPlayedSound = 'slosh-heavy';
+      this.lastTriggerTime = now;
+      return 'slosh-heavy';
     }
 
     // Map zone to sound
@@ -231,6 +234,7 @@ export class FeedbackTrigger {
 
     const selectedSound = zoneToSound[newZone];
     if (selectedSound) {
+      this.currentZone = newZone;
       this.lastPlayedSound = selectedSound;
       this.lastTriggerTime = now;
     }
