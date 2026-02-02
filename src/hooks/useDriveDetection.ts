@@ -8,12 +8,14 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Audio } from 'expo-av';
 import { useDriveStore, isDriving } from '../stores/useDriveStore';
+import { useSensorStore } from '../stores/useSensorStore';
 import { debugLog } from '../stores/useDebugStore';
 import { setLocationCallback } from '../background/BackgroundTaskRegistry';
 import { LocationManager } from '../background/LocationManager';
 import { PermissionManager } from '../background/PermissionManager';
 import { processLocation, DriveStateManager } from '../drive/DriveStateManager';
 import { LocationData } from '../drive/types';
+import { DriveRecorder } from '../services/DriveRecorder';
 
 /**
  * Hook for drive detection
@@ -101,12 +103,34 @@ export function useDriveDetection() {
             const startTime = 'startTime' in newState ? newState.startTime : Date.now();
             setDriveStartTime(startTime);
             debugLog(`✓ Drive auto-started at ${speedKmh} km/h`);
+
+            // Start recording drive to database
+            const difficulty = useSensorStore.getState().difficulty;
+            DriveRecorder.startDrive({
+              startTime,
+              difficulty,
+              manual: false,
+              location,
+            }).catch(err => console.error('[DriveDetection] Failed to start drive recording:', err));
           }
 
           if (driveEnded) {
             setDriveStartTime(null);
             debugLog('✓ Drive auto-stopped (120s stationary)');
+
+            // End drive recording in database
+            DriveRecorder.endDrive({
+              endTime: Date.now(),
+              manual: false,
+              location,
+            }).catch(err => console.error('[DriveDetection] Failed to end drive recording:', err));
           }
+        }
+
+        // Record breadcrumb during active drive (throttled to 5s internally)
+        if (isDriving(newState)) {
+          DriveRecorder.recordBreadcrumb(location)
+            .catch(err => console.error('[DriveDetection] Failed to record breadcrumb:', err));
         }
       }
     },
@@ -167,6 +191,16 @@ export function useDriveDetection() {
 
     if ('startTime' in newState) {
       setDriveStartTime(newState.startTime);
+
+      // Start recording drive to database
+      const difficulty = useSensorStore.getState().difficulty;
+      const lastLocation = useDriveStore.getState().lastLocation;
+      DriveRecorder.startDrive({
+        startTime: newState.startTime,
+        difficulty,
+        manual: true,
+        location: lastLocation,
+      }).catch(err => console.error('[DriveDetection] Failed to start manual drive recording:', err));
     }
     debugLog('✓ Manual drive started');
   }, [setDriveState, setDriveStartTime]);
@@ -180,6 +214,15 @@ export function useDriveDetection() {
 
     if (wasDriving) {
       setDriveStartTime(null);
+
+      // End drive recording in database
+      const lastLocation = useDriveStore.getState().lastLocation;
+      DriveRecorder.endDrive({
+        endTime: Date.now(),
+        manual: true,
+        location: lastLocation,
+      }).catch(err => console.error('[DriveDetection] Failed to end manual drive recording:', err));
+
       debugLog('✓ Manual drive stopped');
     }
   }, [setDriveState, setDriveStartTime]);

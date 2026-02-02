@@ -4,6 +4,7 @@ import { useAudioStore } from '../stores/useAudioStore';
 import { useDriveStore, isDriving } from '../stores/useDriveStore';
 import { audioEngine } from '../audio/AudioEngine';
 import { FeedbackTrigger, RiskZone } from '../audio/FeedbackTrigger';
+import { DriveRecorder } from '../services/DriveRecorder';
 
 /**
  * React hook that triggers audio based on risk values
@@ -61,6 +62,16 @@ export function useAudioFeedback() {
     if (sound) {
       audioEngine.play(sound);
       setLastPlayedSound(sound);
+
+      // Log spill event to database
+      if (sound === 'spill') {
+        const lastLocation = useDriveStore.getState().lastLocation;
+        DriveRecorder.logSpill({
+          timestamp: Date.now(),
+          location: lastLocation,
+          severity: risk,
+        }).catch(err => console.error('[AudioFeedback] Failed to log spill:', err));
+      }
     }
   }, [risk, isSpill, isActive, isSettling, isAudioInterrupted, isCurrentlyDriving]);
 
