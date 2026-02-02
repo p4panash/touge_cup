@@ -5,33 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-01)
 
 **Core value:** Real-time audio feedback that trains smooth driving through muscle memory, without visual distraction.
-**Current focus:** Phase 1 - Sensor & Audio Foundation
+**Current focus:** Phase 2 - Background Execution & Permissions
 
 ## Current Position
 
-Phase: 1 of 5 (Sensor & Audio Foundation)
-Plan: 2 of 3 in current phase
+Phase: 2 of 5 (Background Execution & Permissions)
+Plan: 1 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-01 - Completed 01-02-PLAN.md (Smoothness Engine)
+Last activity: 2026-02-02 - Completed 02-01-PLAN.md
 
-Progress: [##........] 14%
+Progress: [####......] 29%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 3 min
-- Total execution time: 6 min
+- Total plans completed: 4
+- Average duration: 10 min
+- Total execution time: 38 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-sensor-audio-foundation | 2 | 6 min | 3 min |
+| 01-sensor-audio-foundation | 3 | 36 min | 12 min |
+| 02-background-execution-permissions | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (2 min)
-- Trend: improving
+- Last 5 plans: 01-01 (4 min), 01-02 (2 min), 01-03 (30 min), 02-01 (2 min)
+- Note: 01-03 included device verification checkpoint
 
 *Updated after each plan completion*
 
@@ -50,6 +51,12 @@ Recent decisions affecting current work:
 - [01-02]: Used actual timestamp deltas for jerk calculation - critical for Android variable intervals
 - [01-02]: Z-axis excluded from jerk magnitude - vertical motion is road surface, not driving smoothness
 - [01-02]: 1500ms settling period - middle of 1-2s range, prevents false positives during mounting
+- [01-03]: Switched from react-native-audio-api to expo-av - better Expo compatibility, simpler API
+- [01-03]: Zone-based audio trigger (0-0.3, 0.3-0.5, 0.5-0.7, 0.7+) for graduated feedback
+- [01-03]: 2500ms spill cooldown - middle of 2-3s range, balances feedback vs annoyance
+- [02-01]: DriveState as discriminated union - enables exhaustive type checking in state machine
+- [02-01]: Speed threshold 15 km/h (4.17 m/s) - high enough to avoid false positives from walking
+- [02-01]: Stop duration 120s - long enough to handle traffic lights and brief stops
 
 ### Pending Todos
 
@@ -63,9 +70,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-01T21:04:45Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-02-02
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
 
 ---
-*Next step: Execute 01-03-PLAN.md (Audio Feedback)*
+*Next step: Execute 02-02-PLAN.md (Location Permission Request Flow)*
