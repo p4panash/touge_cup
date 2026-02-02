@@ -8,6 +8,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Audio } from 'expo-av';
 import { useDriveStore, isDriving } from '../stores/useDriveStore';
+import { debugLog } from '../stores/useDebugStore';
 import { setLocationCallback } from '../background/BackgroundTaskRegistry';
 import { LocationManager } from '../background/LocationManager';
 import { PermissionManager } from '../background/PermissionManager';
@@ -38,6 +39,8 @@ export function useDriveDetection() {
 
   // Track if we've configured audio for background
   const audioConfiguredRef = useRef(false);
+  // Track if we've received first GPS update
+  const firstUpdateRef = useRef(true);
 
   // Configure audio for background playback
   useEffect(() => {
@@ -52,9 +55,9 @@ export function useDriveDetection() {
           playThroughEarpieceAndroid: false,
         });
         audioConfiguredRef.current = true;
-        console.log('[useDriveDetection] Background audio configured');
+        debugLog('✓ Background audio configured');
       } catch (error) {
-        console.error('[useDriveDetection] Failed to configure audio:', error);
+        debugLog(`✗ Audio config failed: ${error}`);
       }
     }
 
@@ -65,6 +68,13 @@ export function useDriveDetection() {
   const handleLocationUpdate = useCallback(
     (locations: LocationData[]) => {
       if (!locations || locations.length === 0) return;
+
+      // Log first GPS update to confirm location is working
+      if (firstUpdateRef.current) {
+        firstUpdateRef.current = false;
+        const speedKmh = ((locations[0].speed ?? 0) * 3.6).toFixed(1);
+        debugLog(`✓ First GPS update received (${speedKmh} km/h)`);
+      }
 
       // Process ALL locations in batch to avoid missing state transitions
       for (const location of locations) {
@@ -77,7 +87,11 @@ export function useDriveDetection() {
 
         // Debug logging - shows speed in km/h and current state
         const speedKmh = ((location.speed ?? 0) * 3.6).toFixed(1);
-        console.log(`[GPS] ${speedKmh} km/h | state: ${currentState.type} -> ${newState.type}`);
+
+        // Only log state changes to avoid flooding (unless transitioning)
+        if (newState.type !== currentState.type) {
+          debugLog(`[GPS] ${speedKmh} km/h | ${currentState.type} → ${newState.type}`);
+        }
 
         // Update state if changed
         if (newState !== currentState) {
@@ -86,12 +100,12 @@ export function useDriveDetection() {
           if (driveStarted) {
             const startTime = 'startTime' in newState ? newState.startTime : Date.now();
             setDriveStartTime(startTime);
-            console.log('[useDriveDetection] Drive auto-started at speed:', speedKmh, 'km/h');
+            debugLog(`✓ Drive auto-started at ${speedKmh} km/h`);
           }
 
           if (driveEnded) {
             setDriveStartTime(null);
-            console.log('[useDriveDetection] Drive auto-stopped after 120s stationary');
+            debugLog('✓ Drive auto-stopped (120s stationary)');
           }
         }
       }
@@ -110,13 +124,17 @@ export function useDriveDetection() {
 
   // Request permissions and start location
   const requestPermissions = useCallback(async () => {
+    debugLog('Requesting location permissions...');
     const status = await PermissionManager.requestPermissions();
     setPermissionStatus(status);
+    debugLog(`Permission status: ${status}`);
 
     if (status === 'background_granted') {
       // Start location updates
+      debugLog('Starting location updates...');
       await LocationManager.start();
       setLocationRunning(true);
+      debugLog('✓ Location updates started');
     }
 
     return status;
@@ -150,7 +168,7 @@ export function useDriveDetection() {
     if ('startTime' in newState) {
       setDriveStartTime(newState.startTime);
     }
-    console.log('[useDriveDetection] Manual drive started');
+    debugLog('✓ Manual drive started');
   }, [setDriveState, setDriveStartTime]);
 
   // Manual stop
@@ -162,7 +180,7 @@ export function useDriveDetection() {
 
     if (wasDriving) {
       setDriveStartTime(null);
-      console.log('[useDriveDetection] Manual drive stopped');
+      debugLog('✓ Manual drive stopped');
     }
   }, [setDriveState, setDriveStartTime]);
 

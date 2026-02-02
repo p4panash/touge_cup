@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { audioEngine } from '@/audio/AudioEngine';
 import { useSensorPipeline } from '@/hooks/useSensorPipeline';
@@ -13,6 +14,7 @@ import { useAudioFeedback } from '@/hooks/useAudioFeedback';
 import { useSensorStore } from '@/stores/useSensorStore';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveStore, isDriving as isDrivingState } from '@/stores/useDriveStore';
+import { useDebugStore } from '@/stores/useDebugStore';
 
 /**
  * Loading screen shown during audio engine initialization
@@ -216,6 +218,60 @@ function DriveStatusDisplay() {
 }
 
 /**
+ * Debug log viewer - shows recent events for debugging after a drive
+ */
+function DebugLogViewer() {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const logs = useDebugStore((s) => s.logs);
+  const clearLogs = useDebugStore((s) => s.clearLogs);
+
+  const formatTime = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  };
+
+  return (
+    <View style={styles.logContainer}>
+      <TouchableOpacity
+        style={styles.logHeader}
+        onPress={() => setIsExpanded(!isExpanded)}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.logTitle}>
+          Debug Log ({logs.length}) {isExpanded ? '▼' : '▶'}
+        </Text>
+        {logs.length > 0 && (
+          <TouchableOpacity onPress={clearLogs}>
+            <Text style={styles.clearButton}>Clear</Text>
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+
+      {isExpanded && (
+        <ScrollView style={styles.logScroll} nestedScrollEnabled>
+          {logs.length === 0 ? (
+            <Text style={styles.logEmpty}>No logs yet. Drive events will appear here.</Text>
+          ) : (
+            logs.map((log, index) => (
+              <Text key={index} style={styles.logEntry}>
+                <Text style={styles.logTime}>{formatTime(log.timestamp)}</Text>
+                {'  '}
+                {log.message}
+              </Text>
+            ))
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+/**
  * Main screen with drive controls and debug display
  */
 function MainScreen() {
@@ -227,7 +283,10 @@ function MainScreen() {
   const isDrivingNow = isDrivingState(driveState);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.scrollContainer}
+      contentContainerStyle={styles.scrollContent}
+    >
       <Text style={styles.title}>Water Cup Coach</Text>
       <Text style={styles.subtitle}>Debug Mode</Text>
 
@@ -311,8 +370,10 @@ function MainScreen() {
           : 'Start a drive manually or wait for auto-detection at 15 km/h'}
       </Text>
 
+      <DebugLogViewer />
+
       <StatusBar style="light" />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -361,6 +422,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  scrollContainer: {
+    flex: 1,
+    backgroundColor: '#1a1a2e',
+  },
+  scrollContent: {
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 28,
@@ -495,5 +566,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888888',
     textAlign: 'center',
+  },
+  logContainer: {
+    backgroundColor: '#2a2a4e',
+    borderRadius: 12,
+    padding: 12,
+    width: '100%',
+    marginTop: 16,
+  },
+  logHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  logTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  clearButton: {
+    fontSize: 12,
+    color: '#ff4444',
+    paddingHorizontal: 8,
+  },
+  logScroll: {
+    maxHeight: 200,
+    marginTop: 12,
+  },
+  logEmpty: {
+    fontSize: 12,
+    color: '#666666',
+    fontStyle: 'italic',
+  },
+  logEntry: {
+    fontSize: 11,
+    color: '#cccccc',
+    fontFamily: 'monospace',
+    marginBottom: 4,
+  },
+  logTime: {
+    color: '#888888',
   },
 });
