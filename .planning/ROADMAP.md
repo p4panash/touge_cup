@@ -64,12 +64,12 @@ Plans:
   3. Each drive shows spill count and pothole count
   4. GPS breadcrumbs are recorded every 5 seconds during drives
   5. Events are logged with timestamp, type, location, and severity
-**Plans**: TBD
+**Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 03-01: SQLite schema and Drizzle ORM setup
-- [ ] 03-02: Drive session lifecycle and event logging
-- [ ] 03-03: Score calculation engine
+- [ ] 03-01-PLAN.md — SQLite schema and Drizzle ORM setup (expo-sqlite, migrations, schema)
+- [ ] 03-02-PLAN.md — Drive session lifecycle and event logging (DriveRecorder, breadcrumbs)
+- [ ] 03-03-PLAN.md — Score calculation engine (TDD, useDriveHistory hook)
 
 ### Phase 4: UI & User Experience
 **Goal**: User can navigate all app screens and the app runs on both iOS and Android
@@ -112,7 +112,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
-| 3. Drive Session Management | 0/3 | Not started | - |
+| 3. Drive Session Management | 0/3 | Planned | - |
 | 4. UI & User Experience | 0/3 | Not started | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
 
@@ -120,5 +120,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 *Roadmap created: 2026-02-01*
 *Phase 1 planned: 2026-02-01*
 *Phase 2 planned: 2026-02-02*
+*Phase 3 planned: 2026-02-02*
 *Total plans: 14 (estimated, refined during planning)*
 *Total v1 requirements: 36 mapped*
