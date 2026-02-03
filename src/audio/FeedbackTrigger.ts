@@ -1,4 +1,6 @@
 import { PreloadedSoundName } from './types';
+import type { PotholeEvent } from '../sensors/types';
+import type { DifficultyLevel } from '../stores/useSensorStore';
 
 /**
  * Callback for cooldown state changes
@@ -141,11 +143,24 @@ function getRiskZone(risk: number, isSpill: boolean): RiskZone {
  *
  * @see 01-RESEARCH.md "Pattern 3: Graduated Audio Intensity"
  */
+/**
+ * Result of evaluating a pothole event
+ */
+export interface PotholeEvaluation {
+  /** Sound to play for this pothole, or null */
+  sound: PreloadedSoundName | null;
+  /** Whether this pothole should count as a spill (Master mode) */
+  countAsSpill: boolean;
+  /** Whether this pothole is forgiven (Easy/Experienced) */
+  forgiven: boolean;
+}
+
 export class FeedbackTrigger {
   private spillCooldown = new SpillCooldown();
   private lastPlayedSound: PreloadedSoundName | null = null;
   private lastTriggerTime: number = 0;
   private currentZone: RiskZone = 'silent';
+  private difficulty: DifficultyLevel = 'easy';
 
   /** Minimum time between sounds (prevents rapid-fire) */
   private readonly minSoundIntervalMs = 300;
@@ -163,6 +178,35 @@ export class FeedbackTrigger {
    */
   onCooldownChange(callback: (inCooldown: boolean) => void): void {
     this.spillCooldown.onChange(callback);
+  }
+
+  /**
+   * Set difficulty level for difficulty-specific audio behavior
+   */
+  setDifficulty(difficulty: DifficultyLevel): void {
+    this.difficulty = difficulty;
+  }
+
+  /**
+   * Get current difficulty level
+   */
+  getDifficulty(): DifficultyLevel {
+    return this.difficulty;
+  }
+
+  /**
+   * Evaluate a pothole event based on current difficulty
+   *
+   * - Easy/Experienced: Play bump sound, forgive the event
+   * - Master: No special sound, but pothole counts as a spill
+   */
+  evaluatePothole(_pothole: PotholeEvent): PotholeEvaluation {
+    if (this.difficulty === 'master') {
+      // Master mode: potholes count as spills, no special sound
+      return { sound: null, countAsSpill: true, forgiven: false };
+    }
+    // Easy/Experienced: play bump sound, forgive the event
+    return { sound: 'pothole-bump', countAsSpill: false, forgiven: true };
   }
 
   /**
@@ -209,9 +253,12 @@ export class FeedbackTrigger {
       if (this.spillCooldown.canTriggerSpill()) {
         this.currentZone = newZone;
         this.spillCooldown.startCooldown();
-        this.lastPlayedSound = 'spill';
+        // Master mode uses dramatic spill sound
+        const spillSound: PreloadedSoundName =
+          this.difficulty === 'master' ? 'spill-dramatic' : 'spill';
+        this.lastPlayedSound = spillSound;
         this.lastTriggerTime = now;
-        return 'spill';
+        return spillSound;
       }
       // Spill blocked - treat as heavy zone instead
       if (previousZone === 'heavy') {
