@@ -164,9 +164,9 @@ export function useDriveDetection() {
     return status;
   }, [setPermissionStatus, setLocationRunning]);
 
-  // Check initial permission status
+  // Check initial permission status and auto-request if needed
   useEffect(() => {
-    async function checkPermissions() {
+    async function checkAndRequestPermissions() {
       const status = await PermissionManager.getStatus();
       setPermissionStatus(status);
 
@@ -177,10 +177,24 @@ export function useDriveDetection() {
           await LocationManager.start();
         }
         setLocationRunning(true);
+        debugLog('✓ Location already permitted, auto-started');
+      } else if (status === 'not_determined') {
+        // First launch - auto-request permissions
+        debugLog('First launch - requesting location permissions...');
+        const newStatus = await PermissionManager.requestPermissions();
+        setPermissionStatus(newStatus);
+
+        if (newStatus === 'background_granted') {
+          await LocationManager.start();
+          setLocationRunning(true);
+          debugLog('✓ Permissions granted, location started');
+        } else {
+          debugLog(`Permission status: ${newStatus}`);
+        }
       }
     }
 
-    checkPermissions();
+    checkAndRequestPermissions();
   }, [setPermissionStatus, setLocationRunning]);
 
   // Manual start
