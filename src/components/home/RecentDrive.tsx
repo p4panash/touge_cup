@@ -33,7 +33,8 @@ export function RecentDrive({ drive }: RecentDriveProps) {
   }
 
   const handlePress = () => {
-    router.push(`/history/${drive.id}`);
+    // Use modal summary route (not history tab) to avoid tab navigation confusion
+    router.push(`/drive/summary/${drive.id}`);
   };
 
   // Format duration
