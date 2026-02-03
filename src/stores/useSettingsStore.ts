@@ -13,6 +13,8 @@ interface SettingsState {
   keepScreenAwake: boolean;
   /** Audio volume for feedback sounds (0-1, default: 1.0) - for future Phase 5 */
   audioVolume: number;
+  /** Whether store has finished loading from AsyncStorage */
+  _hasHydrated: boolean;
 }
 
 interface SettingsActions {
@@ -27,6 +29,7 @@ type SettingsStore = SettingsState & SettingsActions;
 const initialState: SettingsState = {
   keepScreenAwake: true,
   audioVolume: 1.0,
+  _hasHydrated: false,
 };
 
 /**
@@ -62,6 +65,15 @@ export const useSettingsStore = create<SettingsStore>()(
     {
       name: 'settings-storage',
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({
+        keepScreenAwake: state.keepScreenAwake,
+        audioVolume: state.audioVolume,
+        // Don't persist _hasHydrated
+      }),
+      onRehydrateStorage: () => () => {
+        // Called after rehydration completes - set hydration flag via setState
+        useSettingsStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );

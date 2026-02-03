@@ -40,8 +40,11 @@ export default function ActiveDriveScreen() {
   const [fillLevel, setFillLevel] = useState(1);
 
   // Keep screen awake during drive based on user preference
+  // Wait for hydration to avoid race condition with AsyncStorage load
+  const hasHydrated = useSettingsStore((s) => s._hasHydrated);
   const keepAwakeEnabled = useSettingsStore((s) => s.keepScreenAwake);
-  useConfigurableKeepAwake(keepAwakeEnabled);
+  // Only activate keep-awake after settings load; default to OFF until then
+  useConfigurableKeepAwake(hasHydrated && keepAwakeEnabled);
 
   // Track spills
   useEffect(() => {
