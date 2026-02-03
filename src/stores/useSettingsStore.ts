@@ -1,26 +1,22 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
 /**
  * Settings store for user preferences
  *
  * Note: Difficulty is stored in useSensorStore, not here (to avoid duplication)
+ *
+ * TODO: Keep Screen Awake toggle removed - background location/audio services
+ * keep screen awake regardless. Revisit when we add "auto-detect drives" toggle.
  */
 
 interface SettingsState {
-  /** Keep screen awake during active drives (default: true) */
-  keepScreenAwake: boolean;
-  /** Audio volume for feedback sounds (0-1, default: 1.0) - for future Phase 5 */
+  /** Audio volume for feedback sounds (0-1, default: 1.0) - for Phase 5 */
   audioVolume: number;
-  /** Whether store has finished loading from AsyncStorage */
-  _hasHydrated: boolean;
 }
 
 interface SettingsActions {
-  /** Set keep screen awake preference */
-  setKeepScreenAwake: (enabled: boolean) => void;
   /** Set audio volume (0-1) */
   setAudioVolume: (volume: number) => void;
 }
@@ -28,9 +24,7 @@ interface SettingsActions {
 type SettingsStore = SettingsState & SettingsActions;
 
 const initialState: SettingsState = {
-  keepScreenAwake: true,
   audioVolume: 1.0,
-  _hasHydrated: false,
 };
 
 /**
@@ -38,12 +32,8 @@ const initialState: SettingsState = {
  *
  * Usage:
  * ```typescript
- * // In component
- * const keepScreenAwake = useSettingsStore(s => s.keepScreenAwake);
- * const setKeepScreenAwake = useSettingsStore(s => s.setKeepScreenAwake);
- *
- * // Toggle keep awake
- * setKeepScreenAwake(!keepScreenAwake);
+ * const audioVolume = useSettingsStore(s => s.audioVolume);
+ * const setAudioVolume = useSettingsStore(s => s.setAudioVolume);
  * ```
  *
  * Settings persist to AsyncStorage via zustand persist middleware.
@@ -52,11 +42,6 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       ...initialState,
-
-      setKeepScreenAwake: (enabled: boolean) => {
-        DebugLogger.info(LogTags.SETTINGS, `setKeepScreenAwake: ${enabled}`);
-        set({ keepScreenAwake: enabled });
-      },
 
       setAudioVolume: (volume: number) => {
         // Clamp volume to 0-1 range
@@ -67,20 +52,6 @@ export const useSettingsStore = create<SettingsStore>()(
     {
       name: 'settings-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
-        keepScreenAwake: state.keepScreenAwake,
-        audioVolume: state.audioVolume,
-        // Don't persist _hasHydrated
-      }),
-      onRehydrateStorage: () => (state) => {
-        // Called after rehydration completes - set hydration flag via setState
-        const rehydratedValue = state?.keepScreenAwake ?? 'undefined';
-        DebugLogger.info(
-          LogTags.SETTINGS,
-          `Hydration complete. keepScreenAwake=${rehydratedValue}`
-        );
-        useSettingsStore.setState({ _hasHydrated: true });
-      },
     }
   )
 );

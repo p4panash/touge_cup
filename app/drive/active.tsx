@@ -11,10 +11,7 @@ import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveStore } from '@/stores/useDriveStore';
 import { useSensorStore } from '@/stores/useSensorStore';
 import { DriveRecorder } from '@/services/DriveRecorder';
-import { useSettingsStore } from '@/stores/useSettingsStore';
-import { KeepAwakeWhenEnabled } from '@/hooks/useConfigurableKeepAwake';
 import { Spacing } from '@/theme/spacing';
-import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
 /**
  * Active drive screen
@@ -25,7 +22,8 @@ import { DebugLogger, LogTags } from '@/services/DebugLogger';
  * - Streak timer showing time since last spill
  * - Stop button to end drive manually
  *
- * Screen stays awake during active drive per CONTEXT.md decision.
+ * Note: Screen stays awake due to background location/audio services.
+ * A future "auto-detect drives" toggle could allow screen sleep when disabled.
  */
 export default function ActiveDriveScreen() {
   const router = useRouter();
@@ -40,19 +38,9 @@ export default function ActiveDriveScreen() {
   const [lastSpillTime, setLastSpillTime] = useState<number | null>(null);
   const [fillLevel, setFillLevel] = useState(1);
 
-  // Keep screen awake during drive based on user preference
-  // Wait for hydration to avoid race condition with AsyncStorage load
-  const hasHydrated = useSettingsStore((s) => s._hasHydrated);
-  const keepAwakeEnabled = useSettingsStore((s) => s.keepScreenAwake);
-  const effectiveKeepAwake = hasHydrated && keepAwakeEnabled;
-
-  // Log the values for debugging
-  useEffect(() => {
-    DebugLogger.info(
-      LogTags.KEEP_AWAKE,
-      `ActiveDrive: hasHydrated=${hasHydrated}, keepAwakeEnabled=${keepAwakeEnabled}, effective=${effectiveKeepAwake}`
-    );
-  }, [hasHydrated, keepAwakeEnabled, effectiveKeepAwake]);
+  // TODO: Keep Screen Awake feature removed - background location/audio services
+  // keep screen awake regardless. Revisit when we add "auto-detect drives" toggle
+  // that allows stopping background services. See STATE.md blockers.
 
   // Track spills
   useEffect(() => {
@@ -95,9 +83,6 @@ export default function ActiveDriveScreen() {
 
   return (
     <ThemedView style={[styles.container, { paddingTop: insets.top + Spacing.md }]}>
-      {/* Keep screen awake when enabled in settings */}
-      <KeepAwakeWhenEnabled enabled={effectiveKeepAwake} tag="ActiveDrive" />
-
       {/* Top stats row */}
       <View style={styles.statsRow}>
         <SpillCounter count={spillCount} />

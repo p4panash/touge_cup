@@ -4,9 +4,7 @@ import { ChevronRight } from 'lucide-react-native';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
 import { SettingRow } from '@/components/settings/SettingRow';
-import { SettingToggle } from '@/components/settings/SettingToggle';
 import { DifficultySelector } from '@/components/home/DifficultySelector';
-import { useSettingsStore } from '@/stores/useSettingsStore';
 import { Spacing } from '@/theme/spacing';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -22,8 +20,6 @@ import { useTheme } from '@/hooks/useTheme';
 export default function SettingsScreen() {
   const router = useRouter();
   const { colors } = useTheme();
-  const keepScreenAwake = useSettingsStore((s) => s.keepScreenAwake);
-  const setKeepScreenAwake = useSettingsStore((s) => s.setKeepScreenAwake);
 
   return (
     <ThemedView style={styles.container}>
@@ -40,20 +36,6 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Section: Display */}
-        <View style={styles.section}>
-          <ThemedText variant="secondary" style={styles.sectionHeader}>
-            DISPLAY
-          </ThemedText>
-          <View style={[styles.sectionContent, { backgroundColor: colors.surface }]}>
-            <SettingToggle
-              label="Keep Screen Awake"
-              description="Prevents screen from sleeping during active drives"
-              value={keepScreenAwake}
-              onValueChange={setKeepScreenAwake}
-            />
-          </View>
-        </View>
 
         {/* Section: Audio (placeholder for Phase 5) */}
         <View style={styles.section}>

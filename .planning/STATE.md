@@ -99,7 +99,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- [Future]: Keep Screen Awake toggle - currently ineffective because background location and audio services keep the screen awake regardless. To fix: add "Auto-detect drives" toggle that stops background services when OFF, then Keep Screen Awake becomes meaningful.
 
 ### Blockers/Concerns
 
