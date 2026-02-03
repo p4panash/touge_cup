@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Sensor & Audio Foundation** - Validate core differentiators: 50Hz sensor sampling and sub-100ms audio latency
 - [x] **Phase 2: Background Execution & Permissions** - Enable drive detection and recording with screen off
 - [x] **Phase 3: Drive Session Management** - Persist drives, events, and scores to local database
-- [ ] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
+- [x] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
 - [ ] **Phase 5: Algorithm Refinement** - Implement difficulty progression and pothole forgiveness
 
 ## Phase Details
@@ -89,7 +89,7 @@ Plans:
 - [x] 04-02-PLAN.md — Home screen (hero button, difficulty selector, recent drive) + Active drive screen (water cup animation, spill counter, streak timer)
 - [x] 04-03-PLAN.md — Drive summary screen with map, color-coded polyline, spill markers, stats breakdown
 - [x] 04-04-PLAN.md — History screen with filtering/sorting + Settings screen with preferences
-- [ ] 04-05-PLAN.md — UAT gap closure (icons, layout, navigation, persistence)
+- [x] 04-05-PLAN.md — UAT gap closure (icons, layout, navigation, persistence)
 
 ### Phase 5: Algorithm Refinement
 **Goal**: Smoothness detection adapts to user skill level and forgives road imperfections
@@ -116,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 4/4 | Complete | 2026-02-03 |
-| 4. UI & User Experience | 4/5 | In Progress | - |
+| 4. UI & User Experience | 5/5 | Complete | 2026-02-03 |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
 
 ---
