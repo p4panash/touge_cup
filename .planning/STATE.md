@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-01)
 
 **Core value:** Real-time audio feedback that trains smooth driving through muscle memory, without visual distraction.
-**Current focus:** Phase 4 - UI & User Experience (Plan 01 complete)
+**Current focus:** Phase 4 - UI & User Experience (Plan 02 complete)
 
 ## Current Position
 
 Phase: 4 of 5 (UI & User Experience)
-Plan: 1 of 5 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-03 - Completed 04-01-PLAN.md (Navigation Infrastructure)
+Last activity: 2026-02-03 - Completed 04-02-PLAN.md (Home & Active Drive Screens)
 
-Progress: [###########] 73%
+Progress: [#############] 86%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 9 min
-- Total execution time: 101 min
+- Total execution time: 104 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [###########] 73%
 | 01-sensor-audio-foundation | 3 | 36 min | 12 min |
 | 02-background-execution-permissions | 3 | 49 min | 16 min |
 | 03-drive-session-management | 4 | 13 min | 3 min |
-| 04-ui-user-experience | 1 | 3 min | 3 min |
+| 04-ui-user-experience | 2 | 6 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (3 min), 03-03 (4 min), 03-04 (3 min), 04-01 (3 min)
+- Last 5 plans: 03-03 (4 min), 03-04 (3 min), 04-01 (3 min), 04-02 (3 min)
 - Note: Fast execution due to straightforward implementations
 
 *Updated after each plan completion*
@@ -83,6 +83,10 @@ Recent decisions affecting current work:
 - [04-01]: Background task import first in root layout - maintains Phase 2 initialization order
 - [04-01]: Provider hierarchy: SafeArea > Database > Audio > Slot - ensures dependencies ready before content
 - [04-01]: Emoji tab icons - simple placeholder, can upgrade to lucide-react-native later
+- [04-02]: useAnimatedSensor for 60fps water animation - runs entirely on UI thread, no JS bridge bottleneck
+- [04-02]: Fill level decreases by 0.1 per spill (minimum 0.1 to keep visual appeal)
+- [04-02]: Streak timer shows time since last spill, or since drive start if no spills
+- [04-02]: Keep-awake always enabled for now, will connect to settings later
 
 ### Pending Todos
 
@@ -97,8 +101,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 04-01-PLAN.md (Navigation Infrastructure)
+Stopped at: Completed 04-02-PLAN.md (Home & Active Drive Screens)
 Resume file: None
 
 ---
-*Next step: Execute 04-02-PLAN.md (Home Screen)*
+*Next step: Execute 04-03-PLAN.md (Drive Summary Screen)*
