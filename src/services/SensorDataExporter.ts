@@ -39,13 +39,14 @@ class SensorDataExporterClass {
 
   /**
    * Start recording sensor data for a drive
+   * driveId is optional - may not be available immediately due to async DB creation
    */
-  startRecording(driveId: string, difficulty: string): void {
+  startRecording(difficulty: string, driveId?: string): void {
     this.samples = [];
     this.isRecording = true;
-    this.driveId = driveId;
+    this.driveId = driveId ?? null;
     this.difficulty = difficulty;
-    console.log(`[SensorExporter] Started recording for drive ${driveId}`);
+    console.log(`[SensorExporter] Started recording (difficulty: ${difficulty})`);
   }
 
   /**

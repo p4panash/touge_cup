@@ -60,10 +60,8 @@ export function useAudioFeedback() {
   // Manage sensor data exporter based on drive state
   useEffect(() => {
     if (isCurrentlyDriving) {
-      const driveId = DriveRecorder.getCurrentDriveId();
-      if (driveId) {
-        SensorDataExporter.startRecording(driveId, difficulty);
-      }
+      // Start recording immediately - driveId may not be available yet due to async DB creation
+      SensorDataExporter.startRecording(difficulty);
     } else {
       SensorDataExporter.stopRecording();
     }

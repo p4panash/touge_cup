@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, View, ActivityIndicator, Pressable } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
@@ -6,7 +6,8 @@ import { RouteMap } from '@/components/summary/RouteMap';
 import { StatsBreakdown } from '@/components/summary/StatsBreakdown';
 import { useDriveDetail } from '@/hooks/useDriveHistory';
 import { useTheme } from '@/hooks/useTheme';
-import { Spacing } from '@/theme/spacing';
+import { Spacing, BorderRadius } from '@/theme/spacing';
+import { SensorDataExporter } from '@/services/SensorDataExporter';
 
 /**
  * Drive detail screen accessed from history list
@@ -86,6 +87,23 @@ export default function DriveDetailScreen() {
               : `${spillEvents.length} spill${spillEvents.length === 1 ? '' : 's'} detected. Tap markers on map for details.`}
           </ThemedText>
         </View>
+
+        {/* Export sensor data button - only shows if data exists in memory */}
+        {SensorDataExporter.hasData() && (
+          <View style={styles.exportSection}>
+            <Pressable
+              onPress={() => SensorDataExporter.exportCSV()}
+              style={({ pressed }) => [
+                styles.exportButton,
+                { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <ThemedText style={styles.exportButtonText}>
+                Export Sensor Data ({SensorDataExporter.getSampleCount()} samples)
+              </ThemedText>
+            </Pressable>
+          </View>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -134,5 +152,19 @@ const styles = StyleSheet.create({
   infoText: {
     textAlign: 'center',
     fontSize: 12,
+  },
+  exportSection: {
+    paddingHorizontal: Spacing.lg,
+    marginTop: Spacing.lg,
+  },
+  exportButton: {
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  exportButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
