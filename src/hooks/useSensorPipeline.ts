@@ -29,7 +29,7 @@ export function useSensorPipeline() {
   const setSettling = useSensorStore((state) => state.setSettling);
   const setLatestData = useSensorStore((state) => state.setLatestData);
   const updateRisk = useSensorStore((state) => state.updateRisk);
-  const resetStore = useSensorStore((state) => state.reset);
+  const resetSensorState = useSensorStore((state) => state.resetSensorState);
 
   /**
    * Initialize pipeline with current difficulty
@@ -110,9 +110,9 @@ export function useSensorPipeline() {
     // Clear pipeline
     pipelineRef.current = null;
 
-    // Reset store state
-    resetStore();
-  }, [resetStore]);
+    // Reset only sensor state, preserve difficulty
+    resetSensorState();
+  }, [resetSensorState]);
 
   // Auto-start on mount, cleanup on unmount
   useEffect(() => {

@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * Settings store for user preferences
@@ -40,19 +42,26 @@ const initialState: SettingsState = {
  * setKeepScreenAwake(!keepScreenAwake);
  * ```
  *
- * Note: Settings persist in memory only. Could add AsyncStorage persistence
- * via zustand persist middleware in future.
+ * Settings persist to AsyncStorage via zustand persist middleware.
  */
-export const useSettingsStore = create<SettingsStore>((set) => ({
-  ...initialState,
+export const useSettingsStore = create<SettingsStore>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  setKeepScreenAwake: (enabled: boolean) => {
-    set({ keepScreenAwake: enabled });
-  },
+      setKeepScreenAwake: (enabled: boolean) => {
+        set({ keepScreenAwake: enabled });
+      },
 
-  setAudioVolume: (volume: number) => {
-    // Clamp volume to 0-1 range
-    const clampedVolume = Math.max(0, Math.min(1, volume));
-    set({ audioVolume: clampedVolume });
-  },
-}));
+      setAudioVolume: (volume: number) => {
+        // Clamp volume to 0-1 range
+        const clampedVolume = Math.max(0, Math.min(1, volume));
+        set({ audioVolume: clampedVolume });
+      },
+    }),
+    {
+      name: 'settings-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);

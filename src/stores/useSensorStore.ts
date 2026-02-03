@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FilteredSensorData } from '../sensors/types';
 
 /**
@@ -47,6 +49,8 @@ interface SensorActions {
   setDifficulty: (difficulty: DifficultyLevel) => void;
   /** Reset store to initial state */
   reset: () => void;
+  /** Reset only sensor state (preserves difficulty for persistence) */
+  resetSensorState: () => void;
 }
 
 type SensorStore = SensorState & SensorActions;
@@ -86,30 +90,52 @@ export const SETTLING_PERIOD_MS = 1500;
  * useSensorStore.getState().updateRisk(risk, isSpill, jerkMagnitude);
  * ```
  */
-export const useSensorStore = create<SensorStore>((set) => ({
-  ...initialState,
+export const useSensorStore = create<SensorStore>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  setLatestData: (data: FilteredSensorData) => {
-    set({ latestData: data });
-  },
+      setLatestData: (data: FilteredSensorData) => {
+        set({ latestData: data });
+      },
 
-  setActive: (active: boolean) => {
-    set({ isActive: active });
-  },
+      setActive: (active: boolean) => {
+        set({ isActive: active });
+      },
 
-  updateRisk: (risk: number, isSpill: boolean, jerkMagnitude: number) => {
-    set({ risk, isSpill, jerkMagnitude });
-  },
+      updateRisk: (risk: number, isSpill: boolean, jerkMagnitude: number) => {
+        set({ risk, isSpill, jerkMagnitude });
+      },
 
-  setSettling: (isSettling: boolean) => {
-    set({ isSettling });
-  },
+      setSettling: (isSettling: boolean) => {
+        set({ isSettling });
+      },
 
-  setDifficulty: (difficulty: DifficultyLevel) => {
-    set({ difficulty });
-  },
+      setDifficulty: (difficulty: DifficultyLevel) => {
+        set({ difficulty });
+      },
 
-  reset: () => {
-    set(initialState);
-  },
-}));
+      reset: () => {
+        set(initialState);
+      },
+
+      resetSensorState: () => {
+        // Reset only sensor-related state, preserve difficulty for persistence
+        set({
+          latestData: null,
+          isActive: false,
+          risk: 0,
+          isSpill: false,
+          jerkMagnitude: 0,
+          isSettling: false,
+        });
+      },
+    }),
+    {
+      name: 'sensor-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+      // Only persist difficulty, not high-frequency sensor data
+      partialize: (state) => ({ difficulty: state.difficulty }),
+    }
+  )
+);
