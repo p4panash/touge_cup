@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 04-ui-user-experience
 source: [04-01-SUMMARY.md, 04-02-SUMMARY.md, 04-03-SUMMARY.md, 04-04-SUMMARY.md]
 started: 2026-02-03T07:15:00Z
@@ -114,67 +114,98 @@ skipped: 1
   reason: "User reported: I feel like we could get rid of those funny emoji icons by now. No need to polish this later on, let's have it done now."
   severity: minor
   test: 1
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "TabIcon component in app/(tabs)/_layout.tsx renders emoji strings as Text elements. lucide-react-native not installed."
+  artifacts:
+    - path: "app/(tabs)/_layout.tsx"
+      issue: "TabIcon component uses emoji strings instead of icon library"
+  missing:
+    - "Install lucide-react-native"
+    - "Replace emoji TabIcon with proper icon components"
+  debug_session: ".planning/debug/tab-emoji-icons.md"
 
 - truth: "Difficulty selector should be positioned right below the Start Drive button"
   status: failed
   reason: "User reported: Yes, that's right. But we could also polish this one a bit too. The difficulty could be right below the Start Drive."
   severity: minor
   test: 3
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Start button container uses flex: 1 with justifyContent: 'center', expanding to fill vertical space and pushing DifficultySelector far below."
+  artifacts:
+    - path: "app/(tabs)/index.tsx"
+      issue: "buttonContainer flex: 1 expands and separates button from difficulty selector"
+  missing:
+    - "Remove flex: 1 from buttonContainer"
+    - "Keep button and difficulty selector as cohesive unit"
+  debug_session: ".planning/debug/home-difficulty-positioning.md"
 
 - truth: "Active drive screen stats should not overlap with status bar"
   status: failed
   reason: "User reported: While everything you mentioned happens. This screen is a bit weird as the spills and streak counter is way on top; they are messing up with the activity bar up top"
   severity: major
   test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Active drive screen uses fixed paddingTop: 24px without safe area insets. Full-screen modal presentation requires manual safe area handling."
+  artifacts:
+    - path: "app/drive/active.tsx"
+      issue: "Container uses paddingTop: Spacing.lg (24px) without useSafeAreaInsets"
+  missing:
+    - "Import useSafeAreaInsets from react-native-safe-area-context"
+    - "Apply top inset to container padding"
+  debug_session: ".planning/debug/ui-overlap-status-bar.md"
 
 - truth: "Drive Summary screen should have a back button for navigation"
   status: failed
   reason: "User reported: Can't test that yet, but I will be back over it. One issue that I've noticed is that there is no back button for that screen."
   severity: major
   test: 9
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Drive Summary screen is never actively navigated-to from Active Drive, so Stack doesn't show automatic back button. Missing explicit header configuration."
+  artifacts:
+    - path: "app/drive/summary/[id].tsx"
+      issue: "Screen missing header configuration for back button"
+    - path: "app/drive/_layout.tsx"
+      issue: "Drive summary stack screen missing explicit back button options"
+  missing:
+    - "Add headerBackTitle and back button configuration to Drive Summary screen"
+    - "Ensure back button navigates to home (not back to active drive)"
+  debug_session: ".planning/debug/drive-summary-navigation.md"
 
 - truth: "After ending a drive, user should be navigated to Drive Summary screen"
   status: failed
   reason: "User reported: Yeah, this works. But I just figured out that we don't show a Drive Summary after we end a ride"
   severity: major
   test: 15
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Stop button handler calls router.replace('/') navigating directly to home, bypassing Drive Summary. Drive ID not captured for navigation."
+  artifacts:
+    - path: "app/drive/active.tsx"
+      issue: "handleStop() navigates to '/' instead of '/drive/summary/[id]'"
+  missing:
+    - "Capture drive ID before stopping"
+    - "Navigate to /drive/summary/{driveId} instead of /"
+  debug_session: ".planning/debug/drive-summary-navigation.md"
 
 - truth: "Keep Awake toggle should control screen sleep behavior - OFF should allow normal timeout"
   status: failed
   reason: "User reported: Yeah, when turned off it doesn't dim/sleep"
   severity: major
   test: 17
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Settings store lacks persistence - keepScreenAwake resets to true (default) on app restart. No AsyncStorage middleware configured."
+  artifacts:
+    - path: "src/stores/useSettingsStore.ts"
+      issue: "Store lacks persist middleware, settings reset on restart"
+  missing:
+    - "Add Zustand persist middleware with AsyncStorage"
+  debug_session: ".planning/debug/keep-awake-toggle-issue.md"
 
 - truth: "Difficulty selector in Settings should sync with home screen selector"
   status: failed
   reason: "User reported: no, the selection from settings doesn't update the one from home screen"
   severity: major
   test: 18
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "useSensorPipeline() calls resetStore() on unmount, which resets difficulty to 'easy'. Difficulty is user setting but stored in sensor store without persistence."
+  artifacts:
+    - path: "src/hooks/useSensorPipeline.ts"
+      issue: "stop() calls resetStore() which wipes difficulty selection"
+    - path: "src/stores/useSensorStore.ts"
+      issue: "Store lacks persistence, initialState resets difficulty to 'easy'"
+  missing:
+    - "Selectively reset only sensor state, not difficulty"
+    - "Or add persist middleware to preserve difficulty across resets"
+  debug_session: ".planning/debug/difficulty-selector-sync.md"

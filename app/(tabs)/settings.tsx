@@ -1,4 +1,6 @@
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { ScrollView, View, StyleSheet, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
 import { SettingRow } from '@/components/settings/SettingRow';
@@ -18,6 +20,7 @@ import { useTheme } from '@/hooks/useTheme';
  * - About: App version info
  */
 export default function SettingsScreen() {
+  const router = useRouter();
   const { colors } = useTheme();
   const keepScreenAwake = useSettingsStore((s) => s.keepScreenAwake);
   const setKeepScreenAwake = useSettingsStore((s) => s.setKeepScreenAwake);
@@ -64,6 +67,25 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Section: Developer */}
+        <View style={styles.section}>
+          <ThemedText variant="secondary" style={styles.sectionHeader}>
+            DEVELOPER
+          </ThemedText>
+          <View style={[styles.sectionContent, { backgroundColor: colors.surface }]}>
+            <Pressable
+              onPress={() => router.push('/settings/logs')}
+              style={({ pressed }) => [
+                styles.linkRow,
+                { opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <ThemedText>Debug Logs</ThemedText>
+              <ChevronRight size={20} color={colors.textSecondary} />
+            </Pressable>
+          </View>
+        </View>
+
         {/* Section: About */}
         <View style={styles.section}>
           <ThemedText variant="secondary" style={styles.sectionHeader}>
@@ -107,5 +129,12 @@ const styles = StyleSheet.create({
   },
   difficultyContainer: {
     paddingVertical: Spacing.sm,
+  },
+  linkRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
   },
 });

@@ -7,7 +7,7 @@ import {
   Share,
   RefreshControl,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
 import { DebugLogger, LogEntry, LogLevel } from '@/services/DebugLogger';
@@ -47,7 +47,6 @@ function LogItem({ entry }: { entry: LogEntry }) {
 }
 
 export default function DebugLogsScreen() {
-  const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -97,19 +96,21 @@ export default function DebugLogsScreen() {
   }, [logs]);
 
   return (
-    <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header with actions */}
-      <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <ThemedText style={styles.title}>Debug Logs</ThemedText>
-        <View style={styles.actions}>
-          <Pressable onPress={handleShare} style={styles.actionButton}>
-            <ThemedText style={[styles.actionText, { color: colors.primary }]}>Share</ThemedText>
-          </Pressable>
-          <Pressable onPress={handleClear} style={styles.actionButton}>
-            <ThemedText style={[styles.actionText, { color: colors.danger }]}>Clear</ThemedText>
-          </Pressable>
-        </View>
-      </View>
+    <ThemedView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <View style={styles.headerActions}>
+              <Pressable onPress={handleShare} style={styles.actionButton}>
+                <ThemedText style={{ color: colors.primary }}>Share</ThemedText>
+              </Pressable>
+              <Pressable onPress={handleClear} style={styles.actionButton}>
+                <ThemedText style={{ color: colors.danger }}>Clear</ThemedText>
+              </Pressable>
+            </View>
+          ),
+        }}
+      />
 
       {/* Log count */}
       <View style={[styles.countRow, { backgroundColor: colors.surface }]}>
@@ -143,28 +144,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  headerActions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    borderBottomWidth: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: Spacing.md,
+    gap: Spacing.sm,
   },
   actionButton: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  actionText: {
-    fontWeight: '500',
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
   },
   countRow: {
     paddingHorizontal: Spacing.lg,

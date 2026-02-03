@@ -284,6 +284,7 @@ function DatabaseProvider({ children }: { children: React.ReactNode }) {
       <View style={styles.container}>
         <Text style={styles.errorTitle}>Database Error</Text>
         <Text style={styles.errorText}>{error.message}</Text>
+        <Text style={styles.errorText}>{error.stack}</Text>
         <StatusBar style="light" />
       </View>
     );
