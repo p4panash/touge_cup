@@ -28,7 +28,7 @@ import { Spacing } from '@/theme/spacing';
 export default function ActiveDriveScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { stopManual, isDriving } = useDriveDetection();
+  const { isDriving } = useDriveDetection();
   const driveStartTime = useDriveStore((s) => s.driveStartTime);
   const isSpill = useSensorStore((s) => s.isSpill);
   const risk = useSensorStore((s) => s.risk);
@@ -63,11 +63,22 @@ export default function ActiveDriveScreen() {
   }, [isDriving, driveStartTime]);
 
   // Handle stop button press - navigate to summary screen
-  const handleStop = useCallback(() => {
+  const handleStop = useCallback(async () => {
     // Capture drive ID before stopping (stopManual ends the drive and clears it)
     const driveId = DriveRecorder.getCurrentDriveId();
 
-    stopManual();
+    // End the drive and wait for database to be updated
+    const lastLocation = useDriveStore.getState().lastLocation;
+    await DriveRecorder.endDrive({
+      endTime: Date.now(),
+      manual: true,
+      location: lastLocation,
+    });
+
+    // Now update the drive state (without calling endDrive again)
+    const { setDriveState, setDriveStartTime } = useDriveStore.getState();
+    setDriveState({ type: 'idle' });
+    setDriveStartTime(null);
 
     // Navigate to summary if we have a drive ID, otherwise home
     if (driveId) {
@@ -75,7 +86,7 @@ export default function ActiveDriveScreen() {
     } else {
       router.replace('/');
     }
-  }, [stopManual, router]);
+  }, [router]);
 
   // Determine streak timer start (drive start if no spills, last spill time if spills)
   const streakStartTime = lastSpillTime ?? driveStartTime;

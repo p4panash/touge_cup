@@ -101,6 +101,31 @@ export function useDriveDetection() {
 
         // Update state if changed
         if (newState !== currentState) {
+          // Handle drive ended specially - wait for DB before state update
+          if (driveEnded) {
+            debugLog('✓ Drive auto-stopped (120s stationary)');
+
+            // End drive recording in database FIRST, then update state
+            // This ensures data is saved before navigation watcher triggers
+            DriveRecorder.endDrive({
+              endTime: Date.now(),
+              manual: false,
+              location,
+            }).then(() => {
+              // Only update state after DB is saved
+              setDriveStartTime(null);
+              setDriveState(newState);
+            }).catch(err => {
+              console.error('[DriveDetection] Failed to end drive recording:', err);
+              // Still update state even if DB fails
+              setDriveStartTime(null);
+              setDriveState(newState);
+            });
+            // Don't update state synchronously - wait for DB
+            continue;
+          }
+
+          // Normal state update
           setDriveState(newState);
 
           if (driveStarted) {
@@ -116,18 +141,6 @@ export function useDriveDetection() {
               manual: false,
               location,
             }).catch(err => console.error('[DriveDetection] Failed to start drive recording:', err));
-          }
-
-          if (driveEnded) {
-            setDriveStartTime(null);
-            debugLog('✓ Drive auto-stopped (120s stationary)');
-
-            // End drive recording in database
-            DriveRecorder.endDrive({
-              endTime: Date.now(),
-              manual: false,
-              location,
-            }).catch(err => console.error('[DriveDetection] Failed to end drive recording:', err));
           }
         }
 
