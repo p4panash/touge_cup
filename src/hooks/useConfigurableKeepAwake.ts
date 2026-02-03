@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
 /**
  * Configurable keep-awake hook
@@ -20,15 +21,24 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
  */
 export function useConfigurableKeepAwake(enabled: boolean, tag = 'ActiveDrive') {
   useEffect(() => {
+    DebugLogger.info(LogTags.KEEP_AWAKE, `Hook called: enabled=${enabled}, tag=${tag}`);
+
     if (enabled) {
-      activateKeepAwakeAsync(tag).catch((error) => {
-        console.warn('[KeepAwake] Failed to activate:', error);
-      });
+      DebugLogger.info(LogTags.KEEP_AWAKE, `Activating keep-awake (tag=${tag})`);
+      activateKeepAwakeAsync(tag)
+        .then(() => {
+          DebugLogger.info(LogTags.KEEP_AWAKE, `Activated successfully (tag=${tag})`);
+        })
+        .catch((error) => {
+          DebugLogger.error(LogTags.KEEP_AWAKE, `Failed to activate: ${error}`);
+        });
     } else {
+      DebugLogger.info(LogTags.KEEP_AWAKE, `Deactivating keep-awake (tag=${tag})`);
       deactivateKeepAwake(tag);
     }
 
     return () => {
+      DebugLogger.info(LogTags.KEEP_AWAKE, `Cleanup: deactivating (tag=${tag})`);
       deactivateKeepAwake(tag);
     };
   }, [enabled, tag]);

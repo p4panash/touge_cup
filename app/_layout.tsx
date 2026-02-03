@@ -13,9 +13,13 @@ import { useTheme } from '@/hooks/useTheme';
 import { useSensorPipeline } from '@/hooks/useSensorPipeline';
 import { useAudioFeedback } from '@/hooks/useAudioFeedback';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
+import { DebugLogger } from '@/services/DebugLogger';
 
 // Keep splash screen visible while loading
 SplashScreen.preventAutoHideAsync();
+
+// Log app startup
+DebugLogger.info('App', 'App starting up');
 
 /**
  * Database initialization wrapper
@@ -24,6 +28,15 @@ SplashScreen.preventAutoHideAsync();
 function DatabaseProvider({ children }: { children: React.ReactNode }) {
   const { colors } = useTheme();
   const { success, error } = useDatabaseMigrations();
+
+  useEffect(() => {
+    if (success) {
+      DebugLogger.info('Database', 'Migrations complete');
+    }
+    if (error) {
+      DebugLogger.error('Database', `Migration failed: ${error.message}`);
+    }
+  }, [success, error]);
 
   if (error) {
     return (
@@ -62,11 +75,15 @@ function AudioProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function init() {
       try {
+        DebugLogger.info('Audio', 'Initializing audio engine...');
         await audioEngine.initialize();
+        DebugLogger.info('Audio', 'Audio engine ready');
         setIsReady(true);
       } catch (err) {
         console.error('Failed to initialize audio engine:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        DebugLogger.error('Audio', `Init failed: ${errorMsg}`);
+        setError(errorMsg);
       }
     }
     init();

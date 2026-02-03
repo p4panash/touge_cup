@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
 /**
  * Settings store for user preferences
@@ -53,6 +54,7 @@ export const useSettingsStore = create<SettingsStore>()(
       ...initialState,
 
       setKeepScreenAwake: (enabled: boolean) => {
+        DebugLogger.info(LogTags.SETTINGS, `setKeepScreenAwake: ${enabled}`);
         set({ keepScreenAwake: enabled });
       },
 
@@ -70,8 +72,13 @@ export const useSettingsStore = create<SettingsStore>()(
         audioVolume: state.audioVolume,
         // Don't persist _hasHydrated
       }),
-      onRehydrateStorage: () => () => {
+      onRehydrateStorage: () => (state) => {
         // Called after rehydration completes - set hydration flag via setState
+        const rehydratedValue = state?.keepScreenAwake ?? 'undefined';
+        DebugLogger.info(
+          LogTags.SETTINGS,
+          `Hydration complete. keepScreenAwake=${rehydratedValue}`
+        );
         useSettingsStore.setState({ _hasHydrated: true });
       },
     }
