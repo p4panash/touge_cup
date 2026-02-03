@@ -10,6 +10,7 @@ import { StopButton } from '@/components/drive/StopButton';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveStore } from '@/stores/useDriveStore';
 import { useSensorStore } from '@/stores/useSensorStore';
+import { DriveRecorder } from '@/services/DriveRecorder';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useConfigurableKeepAwake } from '@/hooks/useConfigurableKeepAwake';
 import { Spacing } from '@/theme/spacing';
@@ -62,10 +63,19 @@ export default function ActiveDriveScreen() {
     }
   }, [isDriving, driveStartTime]);
 
-  // Handle stop button press
+  // Handle stop button press - navigate to summary screen
   const handleStop = useCallback(() => {
+    // Capture drive ID before stopping (stopManual ends the drive and clears it)
+    const driveId = DriveRecorder.getCurrentDriveId();
+
     stopManual();
-    router.replace('/');
+
+    // Navigate to summary if we have a drive ID, otherwise home
+    if (driveId) {
+      router.replace(`/drive/summary/${driveId}`);
+    } else {
+      router.replace('/');
+    }
   }, [stopManual, router]);
 
   // Determine streak timer start (drive start if no spills, last spill time if spills)

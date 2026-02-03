@@ -1,4 +1,5 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import { Pressable, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@/hooks/useTheme';
 
 /**
@@ -7,6 +8,7 @@ import { useTheme } from '@/hooks/useTheme';
  * Presented modally from home screen when drive starts
  */
 export default function DriveLayout() {
+  const router = useRouter();
   const { colors } = useTheme();
 
   return (
@@ -32,8 +34,26 @@ export default function DriveLayout() {
         name="summary/[id]"
         options={{
           title: 'Drive Summary',
+          headerLeft: () => (
+            <Pressable onPress={() => router.replace('/')} style={styles.doneButton}>
+              <Text style={[styles.doneText, { color: colors.primary }]}>Done</Text>
+            </Pressable>
+          ),
+          // Prevent going back to active drive (which no longer exists)
+          gestureEnabled: false,
         }}
       />
     </Stack>
   );
 }
+
+const styles = StyleSheet.create({
+  doneButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  doneText: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+});
