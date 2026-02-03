@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect, useCallback } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { WaterCup } from '@/components/drive/WaterCup';
 import { SpillCounter } from '@/components/drive/SpillCounter';
@@ -26,6 +27,7 @@ import { Spacing } from '@/theme/spacing';
  */
 export default function ActiveDriveScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { stopManual, isDriving } = useDriveDetection();
   const driveStartTime = useDriveStore((s) => s.driveStartTime);
   const isSpill = useSensorStore((s) => s.isSpill);
@@ -71,7 +73,7 @@ export default function ActiveDriveScreen() {
   const hasSpills = spillCount > 0;
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { paddingTop: insets.top + Spacing.md }]}>
       {/* Top stats row */}
       <View style={styles.statsRow}>
         <SpillCounter count={spillCount} />
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
+    // paddingTop is now dynamic based on safe area insets (see inline style)
     paddingBottom: Spacing.xl,
   },
   statsRow: {
