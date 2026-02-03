@@ -9,6 +9,7 @@ import { StopButton } from '@/components/drive/StopButton';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveStore } from '@/stores/useDriveStore';
 import { useSensorStore } from '@/stores/useSensorStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useConfigurableKeepAwake } from '@/hooks/useConfigurableKeepAwake';
 import { Spacing } from '@/theme/spacing';
 
@@ -35,8 +36,9 @@ export default function ActiveDriveScreen() {
   const [lastSpillTime, setLastSpillTime] = useState<number | null>(null);
   const [fillLevel, setFillLevel] = useState(1);
 
-  // Keep screen awake during drive (will be connected to settings later)
-  useConfigurableKeepAwake(true);
+  // Keep screen awake during drive based on user preference
+  const keepAwakeEnabled = useSettingsStore((s) => s.keepScreenAwake);
+  useConfigurableKeepAwake(keepAwakeEnabled);
 
   // Track spills
   useEffect(() => {
