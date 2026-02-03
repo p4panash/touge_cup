@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FilteredSensorData } from '../sensors/types';
+import { FilteredSensorData, PotholeEvent } from '../sensors/types';
 
 /**
  * Difficulty level for spill risk thresholds
@@ -34,6 +34,8 @@ interface SensorState {
   isSettling: boolean;
   /** Current difficulty level */
   difficulty: DifficultyLevel;
+  /** Most recent pothole event for UI display (transient, not persisted) */
+  lastPothole: PotholeEvent | null;
 }
 
 interface SensorActions {
@@ -47,6 +49,8 @@ interface SensorActions {
   setSettling: (isSettling: boolean) => void;
   /** Set difficulty level */
   setDifficulty: (difficulty: DifficultyLevel) => void;
+  /** Set most recent pothole event */
+  setPothole: (pothole: PotholeEvent | null) => void;
   /** Reset store to initial state */
   reset: () => void;
   /** Reset only sensor state (preserves difficulty for persistence) */
@@ -63,6 +67,7 @@ const initialState: SensorState = {
   jerkMagnitude: 0,
   isSettling: false,
   difficulty: 'easy',
+  lastPothole: null,
 };
 
 /**
@@ -115,6 +120,10 @@ export const useSensorStore = create<SensorStore>()(
         set({ difficulty });
       },
 
+      setPothole: (pothole: PotholeEvent | null) => {
+        set({ lastPothole: pothole });
+      },
+
       reset: () => {
         set(initialState);
       },
@@ -128,6 +137,7 @@ export const useSensorStore = create<SensorStore>()(
           isSpill: false,
           jerkMagnitude: 0,
           isSettling: false,
+          lastPothole: null,
         });
       },
     }),
