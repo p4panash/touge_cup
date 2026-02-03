@@ -3,18 +3,34 @@
  *
  * Graduated slosh sounds for different risk levels,
  * plus dramatic spill sound when threshold exceeded.
+ * Master mode adds ambient-tension loop and enhanced sounds.
  */
-export type SoundName = 'slosh-light' | 'slosh-medium' | 'slosh-heavy' | 'spill';
+export type SoundName =
+  | 'slosh-light'
+  | 'slosh-medium'
+  | 'slosh-heavy'
+  | 'spill'
+  | 'spill-dramatic'
+  | 'pothole-bump'
+  | 'ambient-tension';
 
 /**
  * All available sound names as an array for iteration
+ * Note: ambient-tension is excluded - it's managed separately by AmbientAudioController
  */
 export const SOUND_NAMES: SoundName[] = [
   'slosh-light',
   'slosh-medium',
   'slosh-heavy',
   'spill',
+  'spill-dramatic',
+  'pothole-bump',
 ];
+
+/**
+ * Ambient sounds that loop continuously (managed by AmbientAudioController)
+ */
+export const AMBIENT_SOUNDS: SoundName[] = ['ambient-tension'];
 
 /**
  * Audio engine state
