@@ -85,9 +85,9 @@ Plans:
 **Plans:** 4 plans in 2 waves
 
 Plans:
-- [ ] 04-01-PLAN.md — Navigation infrastructure with expo-router, theme system, tab navigation
-- [ ] 04-02-PLAN.md — Home screen (hero button, difficulty selector, recent drive) + Active drive screen (water cup animation, spill counter, streak timer)
-- [ ] 04-03-PLAN.md — Drive summary screen with map, color-coded polyline, spill markers, stats breakdown
+- [x] 04-01-PLAN.md — Navigation infrastructure with expo-router, theme system, tab navigation
+- [x] 04-02-PLAN.md — Home screen (hero button, difficulty selector, recent drive) + Active drive screen (water cup animation, spill counter, streak timer)
+- [x] 04-03-PLAN.md — Drive summary screen with map, color-coded polyline, spill markers, stats breakdown
 - [ ] 04-04-PLAN.md — History screen with filtering/sorting + Settings screen with preferences
 
 ### Phase 5: Algorithm Refinement
@@ -115,7 +115,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 4/4 | Complete | 2026-02-03 |
-| 4. UI & User Experience | 0/4 | Planned | - |
+| 4. UI & User Experience | 3/4 | In progress | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
 
 ---
