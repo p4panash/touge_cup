@@ -16,6 +16,7 @@ import { PermissionManager } from '../background/PermissionManager';
 import { processLocation, DriveStateManager } from '../drive/DriveStateManager';
 import { LocationData } from '../drive/types';
 import { DriveRecorder } from '../services/DriveRecorder';
+import { DebugLogger } from '../services/DebugLogger';
 
 /**
  * Hook for drive detection
@@ -50,6 +51,7 @@ export function useDriveDetection() {
       if (audioConfiguredRef.current) return;
 
       try {
+        DebugLogger.info('Audio', 'Configuring background audio mode...');
         await Audio.setAudioModeAsync({
           playsInSilentModeIOS: true,
           staysActiveInBackground: true, // KEY: Enable background audio
@@ -57,8 +59,10 @@ export function useDriveDetection() {
           playThroughEarpieceAndroid: false,
         });
         audioConfiguredRef.current = true;
+        DebugLogger.info('Audio', 'Background audio configured (staysActiveInBackground=true)');
         debugLog('✓ Background audio configured');
       } catch (error) {
+        DebugLogger.error('Audio', `Config failed: ${error}`);
         debugLog(`✗ Audio config failed: ${error}`);
       }
     }
@@ -155,9 +159,11 @@ export function useDriveDetection() {
 
     if (status === 'background_granted') {
       // Start location updates
+      DebugLogger.info('Location', 'Starting location updates (permission granted)');
       debugLog('Starting location updates...');
       await LocationManager.start();
       setLocationRunning(true);
+      DebugLogger.info('Location', 'Location updates running - this may keep screen awake');
       debugLog('✓ Location updates started');
     }
 
