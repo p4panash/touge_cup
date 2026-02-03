@@ -44,13 +44,13 @@ export default function HomeScreen() {
         </ThemedText>
       </View>
 
-      {/* Hero Start Button */}
-      <View style={styles.buttonContainer}>
+      {/* Hero Section: Start Button + Difficulty Selector as cohesive unit */}
+      <View style={styles.heroSection}>
         <StartButton onPress={handleStartDrive} disabled={isDriving} />
+        <View style={styles.difficultyWrapper}>
+          <DifficultySelector />
+        </View>
       </View>
-
-      {/* Difficulty Selector */}
-      <DifficultySelector />
 
       {/* Recent Drive */}
       <View style={styles.recentContainer}>
@@ -80,10 +80,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
-  buttonContainer: {
+  heroSection: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  difficultyWrapper: {
+    marginTop: Spacing.lg,
   },
   recentContainer: {
     width: '100%',
