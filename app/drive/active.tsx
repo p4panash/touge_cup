@@ -12,7 +12,7 @@ import { useDriveStore } from '@/stores/useDriveStore';
 import { useSensorStore } from '@/stores/useSensorStore';
 import { DriveRecorder } from '@/services/DriveRecorder';
 import { useSettingsStore } from '@/stores/useSettingsStore';
-import { useConfigurableKeepAwake } from '@/hooks/useConfigurableKeepAwake';
+import { KeepAwakeWhenEnabled } from '@/hooks/useConfigurableKeepAwake';
 import { Spacing } from '@/theme/spacing';
 import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
@@ -53,9 +53,6 @@ export default function ActiveDriveScreen() {
       `ActiveDrive: hasHydrated=${hasHydrated}, keepAwakeEnabled=${keepAwakeEnabled}, effective=${effectiveKeepAwake}`
     );
   }, [hasHydrated, keepAwakeEnabled, effectiveKeepAwake]);
-
-  // Only activate keep-awake after settings load; default to OFF until then
-  useConfigurableKeepAwake(effectiveKeepAwake);
 
   // Track spills
   useEffect(() => {
@@ -98,6 +95,9 @@ export default function ActiveDriveScreen() {
 
   return (
     <ThemedView style={[styles.container, { paddingTop: insets.top + Spacing.md }]}>
+      {/* Keep screen awake when enabled in settings */}
+      <KeepAwakeWhenEnabled enabled={effectiveKeepAwake} tag="ActiveDrive" />
+
       {/* Top stats row */}
       <View style={styles.statsRow}>
         <SpillCounter count={spillCount} />
