@@ -124,12 +124,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SMTH-02 | Phase 1 | Pending |
 | SMTH-03 | Phase 1 | Pending |
 | SMTH-04 | Phase 1 | Pending |
-| SMTH-05 | Phase 5 | Pending |
-| POTH-01 | Phase 5 | Pending |
-| POTH-02 | Phase 5 | Pending |
+| SMTH-05 | Phase 5 | Complete |
+| POTH-01 | Phase 5 | Complete |
+| POTH-02 | Phase 5 | Complete |
 | AUDI-01 | Phase 1 | Pending |
 | AUDI-02 | Phase 1 | Pending |
-| AUDI-03 | Phase 5 | Pending |
+| AUDI-03 | Phase 5 | Complete |
 | AUDI-04 | Phase 1 | Pending |
 | AUDI-05 | Phase 1 | Pending |
 | DRIV-01 | Phase 2 | Pending |
