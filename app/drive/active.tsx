@@ -14,6 +14,7 @@ import { DriveRecorder } from '@/services/DriveRecorder';
 import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useConfigurableKeepAwake } from '@/hooks/useConfigurableKeepAwake';
 import { Spacing } from '@/theme/spacing';
+import { DebugLogger, LogTags } from '@/services/DebugLogger';
 
 /**
  * Active drive screen
@@ -43,8 +44,18 @@ export default function ActiveDriveScreen() {
   // Wait for hydration to avoid race condition with AsyncStorage load
   const hasHydrated = useSettingsStore((s) => s._hasHydrated);
   const keepAwakeEnabled = useSettingsStore((s) => s.keepScreenAwake);
+  const effectiveKeepAwake = hasHydrated && keepAwakeEnabled;
+
+  // Log the values for debugging
+  useEffect(() => {
+    DebugLogger.info(
+      LogTags.KEEP_AWAKE,
+      `ActiveDrive: hasHydrated=${hasHydrated}, keepAwakeEnabled=${keepAwakeEnabled}, effective=${effectiveKeepAwake}`
+    );
+  }, [hasHydrated, keepAwakeEnabled, effectiveKeepAwake]);
+
   // Only activate keep-awake after settings load; default to OFF until then
-  useConfigurableKeepAwake(hasHydrated && keepAwakeEnabled);
+  useConfigurableKeepAwake(effectiveKeepAwake);
 
   // Track spills
   useEffect(() => {
