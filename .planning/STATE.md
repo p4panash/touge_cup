@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-01)
 
 **Core value:** Real-time audio feedback that trains smooth driving through muscle memory, without visual distraction.
-**Current focus:** Phase 4 - UI & User Experience (Plan 03 complete)
+**Current focus:** Phase 4 - UI & User Experience (Complete)
 
 ## Current Position
 
 Phase: 4 of 5 (UI & User Experience)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-03 - Completed 04-03-PLAN.md (Drive Summary Screen)
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-02-03 - Completed 04-04-PLAN.md (History & Settings)
 
-Progress: [##############] 93%
+Progress: [###############] 100% (Phase 4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 8 min
-- Total execution time: 107 min
+- Total execution time: 109 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [##############] 93%
 | 01-sensor-audio-foundation | 3 | 36 min | 12 min |
 | 02-background-execution-permissions | 3 | 49 min | 16 min |
 | 03-drive-session-management | 4 | 13 min | 3 min |
-| 04-ui-user-experience | 3 | 9 min | 3 min |
+| 04-ui-user-experience | 4 | 11 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-04 (3 min), 04-01 (3 min), 04-02 (3 min), 04-03 (3 min)
+- Last 5 plans: 04-01 (3 min), 04-02 (3 min), 04-03 (3 min), 04-04 (2 min)
 - Note: Fast execution due to straightforward implementations
 
 *Updated after each plan completion*
@@ -86,10 +86,12 @@ Recent decisions affecting current work:
 - [04-02]: useAnimatedSensor for 60fps water animation - runs entirely on UI thread, no JS bridge bottleneck
 - [04-02]: Fill level decreases by 0.1 per spill (minimum 0.1 to keep visual appeal)
 - [04-02]: Streak timer shows time since last spill, or since drive start if no spills
-- [04-02]: Keep-awake always enabled for now, will connect to settings later
 - [04-03]: Color coding: <50m/10s=red, <100m/30s=orange, else=green for polyline proximity
 - [04-03]: Score colors: >80 green, 50-80 yellow, <50 red
 - [04-03]: Map upper half, scrollable stats lower half layout
+- [04-04]: Reused DifficultySelector from home screen in settings for consistency
+- [04-04]: Keep-awake reads from settings store, wired in active drive screen
+- [04-04]: Audio section is placeholder for Phase 5
 
 ### Pending Todos
 
@@ -104,8 +106,8 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 04-03-PLAN.md (Drive Summary Screen)
+Stopped at: Completed 04-04-PLAN.md (History & Settings)
 Resume file: None
 
 ---
-*Next step: Execute 04-04-PLAN.md (History & Settings)*
+*Next step: Begin Phase 5 - Polish & Deployment*
