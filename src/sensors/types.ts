@@ -5,6 +5,9 @@
  * through the pipeline from DeviceMotion to the Zustand store.
  */
 
+// Re-export pothole types for centralized access
+export { PotholeEvent } from './processors/PotholeDetector';
+
 /**
  * 3D vector representing acceleration or rotation values
  */
