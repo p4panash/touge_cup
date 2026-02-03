@@ -1,4 +1,4 @@
-import { SoundName } from './types';
+import { PreloadedSoundName } from './types';
 
 /**
  * Callback for cooldown state changes
@@ -143,7 +143,7 @@ function getRiskZone(risk: number, isSpill: boolean): RiskZone {
  */
 export class FeedbackTrigger {
   private spillCooldown = new SpillCooldown();
-  private lastPlayedSound: SoundName | null = null;
+  private lastPlayedSound: PreloadedSoundName | null = null;
   private lastTriggerTime: number = 0;
   private currentZone: RiskZone = 'silent';
 
@@ -175,7 +175,7 @@ export class FeedbackTrigger {
    * @param isSpill - True if spill threshold exceeded
    * @returns Sound name to play, or null for silence
    */
-  evaluate(risk: number, isSpill: boolean): SoundName | null {
+  evaluate(risk: number, isSpill: boolean): PreloadedSoundName | null {
     const now = Date.now();
     const timeSinceLastSound = now - this.lastTriggerTime;
 
@@ -224,7 +224,7 @@ export class FeedbackTrigger {
     }
 
     // Map zone to sound
-    const zoneToSound: Record<RiskZone, SoundName | null> = {
+    const zoneToSound: Record<RiskZone, PreloadedSoundName | null> = {
       silent: null,
       light: 'slosh-light',
       medium: 'slosh-medium',
@@ -252,7 +252,7 @@ export class FeedbackTrigger {
   /**
    * Get last played sound (for debugging)
    */
-  getLastPlayedSound(): SoundName | null {
+  getLastPlayedSound(): PreloadedSoundName | null {
     return this.lastPlayedSound;
   }
 

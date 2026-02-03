@@ -15,10 +15,21 @@ export type SoundName =
   | 'ambient-tension';
 
 /**
- * All available sound names as an array for iteration
+ * Sound names that are preloaded by AudioEngine (one-shot sounds)
  * Note: ambient-tension is excluded - it's managed separately by AmbientAudioController
  */
-export const SOUND_NAMES: SoundName[] = [
+export type PreloadedSoundName =
+  | 'slosh-light'
+  | 'slosh-medium'
+  | 'slosh-heavy'
+  | 'spill'
+  | 'spill-dramatic'
+  | 'pothole-bump';
+
+/**
+ * All preloaded sound names as an array for iteration
+ */
+export const SOUND_NAMES: PreloadedSoundName[] = [
   'slosh-light',
   'slosh-medium',
   'slosh-heavy',

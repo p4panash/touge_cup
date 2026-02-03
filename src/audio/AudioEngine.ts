@@ -1,17 +1,21 @@
 import { Audio, AVPlaybackSource, InterruptionModeIOS } from 'expo-av';
-import { SoundName, SOUND_NAMES } from './types';
+import { PreloadedSoundName, SOUND_NAMES } from './types';
 
 /** Delay before undocking after last sound finishes (ms) */
 const UNDUCK_DELAY_MS = 500;
 
 /**
  * Sound asset definitions for expo-av
+ * Note: ambient-tension is NOT included here - it's managed separately
+ * by AmbientAudioController with different loading pattern (looping, volume control)
  */
-const SOUND_ASSETS: Record<SoundName, AVPlaybackSource> = {
+const SOUND_ASSETS: Record<PreloadedSoundName, AVPlaybackSource> = {
   'slosh-light': require('../../assets/audio/slosh-light.m4a'),
   'slosh-medium': require('../../assets/audio/slosh-medium.m4a'),
   'slosh-heavy': require('../../assets/audio/slosh-heavy.m4a'),
   spill: require('../../assets/audio/spill.m4a'),
+  'spill-dramatic': require('../../assets/audio/spill-dramatic.m4a'),
+  'pothole-bump': require('../../assets/audio/pothole-bump.m4a'),
 };
 
 /**
@@ -23,7 +27,7 @@ const SOUND_ASSETS: Record<SoundName, AVPlaybackSource> = {
 export class AudioEngine {
   private static instance: AudioEngine | null = null;
 
-  private sounds: Map<SoundName, Audio.Sound> = new Map();
+  private sounds: Map<PreloadedSoundName, Audio.Sound> = new Map();
   private _isInitialized: boolean = false;
   private _isInterrupted: boolean = false;
   private unduckTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -65,7 +69,7 @@ export class AudioEngine {
     this._isInitialized = true;
   }
 
-  async play(soundName: SoundName): Promise<void> {
+  async play(soundName: PreloadedSoundName): Promise<void> {
     if (!this._isInitialized || this._isInterrupted) {
       return;
     }
