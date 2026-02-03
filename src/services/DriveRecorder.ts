@@ -7,7 +7,7 @@
  * Usage:
  * - Call startDrive() when drive detection transitions to 'driving'
  * - Call logSpill() from audio feedback when spill triggers
- * - Call logBreadcrumb() every 5 seconds during drive
+ * - Call logBreadcrumb() every 2 seconds during drive
  * - Call endDrive() when drive detection transitions to 'idle'
  */
 
@@ -18,8 +18,8 @@ import { calculateScore } from '../scoring/calculateScore';
 import type { DifficultyLevel } from '../stores/useSensorStore';
 import type { LocationData } from '../drive/types';
 
-/** Breadcrumb interval in milliseconds (5 seconds per requirements) */
-const BREADCRUMB_INTERVAL_MS = 5000;
+/** Breadcrumb interval in milliseconds (2 seconds for higher resolution) */
+const BREADCRUMB_INTERVAL_MS = 2000;
 
 class DriveRecorderClass {
   private currentDriveId: string | null = null;

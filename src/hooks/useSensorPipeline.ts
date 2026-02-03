@@ -2,6 +2,8 @@ import { useCallback, useRef, useEffect } from 'react';
 import { DeviceMotionManager } from '../sensors/DeviceMotionManager';
 import { SensorPipeline } from '../sensors/SensorPipeline';
 import { useSensorStore, SETTLING_PERIOD_MS } from '../stores/useSensorStore';
+import { useDriveStore, isDriving } from '../stores/useDriveStore';
+import { SensorDataExporter } from '../services/SensorDataExporter';
 
 /**
  * React hook connecting sensor subscription to processing pipeline
@@ -74,6 +76,23 @@ export function useSensorPipeline() {
         // Push pothole event to store if detected
         if (result.pothole) {
           setPothole(result.pothole);
+        }
+
+        // Capture sample for export if recording (during active drive)
+        const driveState = useDriveStore.getState();
+        if (isDriving(driveState.driveState)) {
+          SensorDataExporter.addSample({
+            timestamp: data.timestamp * 1000, // Convert to ms
+            x: data.filteredAcceleration.x,
+            y: data.filteredAcceleration.y,
+            z: data.filteredAcceleration.z,
+            jerkX: result.jerk.x,
+            jerkY: result.jerk.y,
+            jerkMagnitude: result.jerk.magnitude,
+            risk: result.risk,
+            zAccel: result.zAccelFiltered,
+            speed: driveState.lastLocation?.speed ?? null,
+          });
         }
       }
     });

@@ -18,8 +18,8 @@ export const STATIONARY_THRESHOLD_MS = 1.0;
 /** Location update interval: 1 second */
 export const LOCATION_UPDATE_INTERVAL_MS = 1000;
 
-/** GPS breadcrumb interval for route tracking: 5 seconds */
-export const BREADCRUMB_INTERVAL_MS = 5000;
+/** GPS breadcrumb interval for route tracking: 2 seconds */
+export const BREADCRUMB_INTERVAL_MS = 2000;
 
 /** Background task name for expo-task-manager */
 export const LOCATION_TASK_NAME = 'background-location-task';

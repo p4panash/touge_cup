@@ -6,6 +6,7 @@ import { audioEngine } from '../audio/AudioEngine';
 import { FeedbackTrigger, RiskZone } from '../audio/FeedbackTrigger';
 import { AmbientAudioController } from '../audio/AmbientAudioController';
 import { DriveRecorder } from '../services/DriveRecorder';
+import { SensorDataExporter } from '../services/SensorDataExporter';
 
 /**
  * React hook that triggers audio based on risk values
@@ -55,6 +56,18 @@ export function useAudioFeedback() {
   useEffect(() => {
     triggerRef.current.setDifficulty(difficulty);
   }, [difficulty]);
+
+  // Manage sensor data exporter based on drive state
+  useEffect(() => {
+    if (isCurrentlyDriving) {
+      const driveId = DriveRecorder.getCurrentDriveId();
+      if (driveId) {
+        SensorDataExporter.startRecording(driveId, difficulty);
+      }
+    } else {
+      SensorDataExporter.stopRecording();
+    }
+  }, [isCurrentlyDriving, difficulty]);
 
   // Manage ambient audio based on difficulty and drive state
   useEffect(() => {
@@ -114,7 +127,7 @@ export function useAudioFeedback() {
         ambientControllerRef.current.onSpill();
       }
 
-      // Log spill event to database
+      // Log spill event to database and mark in exporter
       if (sound === 'spill' || sound === 'spill-dramatic') {
         const lastLocation = useDriveStore.getState().lastLocation;
         DriveRecorder.logSpill({
@@ -122,6 +135,7 @@ export function useAudioFeedback() {
           location: lastLocation,
           severity: risk,
         }).catch(err => console.error('[AudioFeedback] Failed to log spill:', err));
+        SensorDataExporter.markEvent('spill');
       }
     }
   }, [risk, isSpill, isActive, isSettling, isAudioInterrupted, isCurrentlyDriving]);
@@ -140,7 +154,7 @@ export function useAudioFeedback() {
       setLastPlayedSound(result.sound);
     }
 
-    // Log pothole to database
+    // Log pothole to database and mark in exporter
     const lastLocation = useDriveStore.getState().lastLocation;
     DriveRecorder.logPothole({
       timestamp: lastPothole.timestamp,
@@ -148,6 +162,7 @@ export function useAudioFeedback() {
       severity: lastPothole.zPeak / 10, // Normalize to 0-1 range
       forgiven: result.forgiven,
     }).catch(err => console.error('[AudioFeedback] Failed to log pothole:', err));
+    SensorDataExporter.markEvent('pothole');
 
     // If Master mode and pothole counts as spill, trigger spill sound
     if (result.countAsSpill) {
