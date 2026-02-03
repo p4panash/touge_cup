@@ -7,6 +7,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { Slot, SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDatabaseMigrations } from '@/db/client';
 import { audioEngine } from '@/audio/AudioEngine';
 import { useTheme } from '@/hooks/useTheme';
@@ -149,18 +150,20 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
-        <DatabaseProvider>
-          <AudioProvider>
-            <SensorProvider>
-              <Slot />
-            </SensorProvider>
-          </AudioProvider>
-        </DatabaseProvider>
-        <StatusBar style={isDark ? 'light' : 'dark'} />
-      </View>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <View style={[styles.root, { backgroundColor: colors.background }]}>
+          <DatabaseProvider>
+            <AudioProvider>
+              <SensorProvider>
+                <Slot />
+              </SensorProvider>
+            </AudioProvider>
+          </DatabaseProvider>
+          <StatusBar style={isDark ? 'light' : 'dark'} />
+        </View>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

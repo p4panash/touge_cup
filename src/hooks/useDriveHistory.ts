@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getCompletedDrives, getDriveById } from '../db/queries/drives';
+import { getCompletedDrives, getDriveById, deleteDrive as deleteDriveFromDb } from '../db/queries/drives';
 
 export interface DriveListItem {
   id: string;
@@ -55,11 +55,24 @@ export function useDriveHistory(limit = 50) {
     fetchDrives();
   }, [fetchDrives]);
 
+  const deleteDrive = useCallback(async (driveId: string) => {
+    try {
+      await deleteDriveFromDb(driveId);
+      // Optimistically remove from local state
+      setDrives(prev => prev.filter(d => d.id !== driveId));
+    } catch (err) {
+      console.error('[useDriveHistory] Failed to delete drive:', err);
+      // Refresh to restore correct state on error
+      fetchDrives();
+    }
+  }, [fetchDrives]);
+
   return {
     drives,
     loading,
     error,
     refresh: fetchDrives,
+    deleteDrive,
   };
 }
 

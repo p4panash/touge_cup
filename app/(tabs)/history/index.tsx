@@ -15,7 +15,7 @@ const ITEM_HEIGHT = 80 + Spacing.xs * 2; // height + vertical margin
  * Shows past drives with filtering by difficulty and sorting by date or score
  */
 export default function HistoryScreen() {
-  const { drives, loading, refresh } = useDriveHistory(100);
+  const { drives, loading, refresh, deleteDrive } = useDriveHistory(100);
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all');
 
@@ -41,8 +41,10 @@ export default function HistoryScreen() {
 
   // Memoized renderItem to prevent re-creating function on each render
   const renderItem = useCallback(
-    ({ item }: { item: DriveListItemType }) => <DriveListItem drive={item} />,
-    []
+    ({ item }: { item: DriveListItemType }) => (
+      <DriveListItem drive={item} onDelete={deleteDrive} />
+    ),
+    [deleteDrive]
   );
 
   // Memoized keyExtractor

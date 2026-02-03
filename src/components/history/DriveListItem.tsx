@@ -1,5 +1,7 @@
-import { Pressable, View, StyleSheet } from 'react-native';
+import { useRef } from 'react';
+import { Pressable, View, StyleSheet, Alert, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Swipeable } from 'react-native-gesture-handler';
 import { ThemedText } from '../shared/ThemedText';
 import { useTheme } from '../../hooks/useTheme';
 import { Spacing, BorderRadius } from '../../theme/spacing';
@@ -7,19 +9,68 @@ import type { DriveListItem as DriveListItemType } from '../../hooks/useDriveHis
 
 interface DriveListItemProps {
   drive: DriveListItemType;
+  onDelete?: (driveId: string) => void;
 }
 
 /**
  * Single drive row in history list
  * Fixed 80px height for FlatList optimization
  * Tappable to navigate to drive summary
+ * Swipeable left to reveal delete action
  */
-export function DriveListItem({ drive }: DriveListItemProps) {
+export function DriveListItem({ drive, onDelete }: DriveListItemProps) {
   const { colors } = useTheme();
   const router = useRouter();
+  const swipeableRef = useRef<Swipeable>(null);
 
   const handlePress = () => {
     router.push(`/drive/summary/${drive.id}`);
+  };
+
+  const handleDelete = () => {
+    // Close the swipeable first
+    swipeableRef.current?.close();
+
+    // Show confirmation dialog
+    Alert.alert(
+      'Delete Drive',
+      `Delete this drive from ${formatDriveDate(drive.startTime)}? This cannot be undone.`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => onDelete?.(drive.id),
+        },
+      ]
+    );
+  };
+
+  const renderRightActions = (
+    progress: Animated.AnimatedInterpolation<number>,
+    _dragX: Animated.AnimatedInterpolation<number>
+  ) => {
+    const translateX = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [80, 0],
+    });
+
+    return (
+      <Animated.View style={[styles.deleteContainer, { transform: [{ translateX }] }]}>
+        <Pressable
+          onPress={handleDelete}
+          style={({ pressed }) => [
+            styles.deleteButton,
+            pressed && { opacity: 0.8 },
+          ]}
+        >
+          <ThemedText style={styles.deleteText}>Delete</ThemedText>
+        </Pressable>
+      </Animated.View>
+    );
   };
 
   const scoreColor = getScoreColor(drive.score ?? 0);
@@ -28,45 +79,53 @@ export function DriveListItem({ drive }: DriveListItemProps) {
   const formattedDuration = formatDuration(drive.durationMs ?? 0);
 
   return (
-    <Pressable
-      onPress={handlePress}
-      style={({ pressed }) => [
-        styles.container,
-        { backgroundColor: colors.surface },
-        pressed && { opacity: 0.8 },
-      ]}
+    <Swipeable
+      ref={swipeableRef}
+      renderRightActions={renderRightActions}
+      rightThreshold={40}
+      friction={2}
+      overshootRight={false}
     >
-      {/* Left: Date and Duration */}
-      <View style={styles.leftSection}>
-        <ThemedText style={styles.date}>{formattedDate}</ThemedText>
-        <ThemedText variant="secondary" style={styles.duration}>
-          {formattedDuration}
-        </ThemedText>
-      </View>
-
-      {/* Center: Spill count and Difficulty badge */}
-      <View style={styles.centerSection}>
-        <View style={styles.spillContainer}>
-          <ThemedText style={styles.spillIcon}>💧</ThemedText>
-          <ThemedText style={styles.spillCount}>{drive.spillCount ?? 0}</ThemedText>
-        </View>
-        <View style={[styles.difficultyBadge, { backgroundColor: difficultyColor }]}>
-          <ThemedText style={styles.difficultyText}>
-            {formatDifficulty(drive.difficulty)}
+      <Pressable
+        onPress={handlePress}
+        style={({ pressed }) => [
+          styles.container,
+          { backgroundColor: colors.surface },
+          pressed && { opacity: 0.8 },
+        ]}
+      >
+        {/* Left: Date and Duration */}
+        <View style={styles.leftSection}>
+          <ThemedText style={styles.date}>{formattedDate}</ThemedText>
+          <ThemedText variant="secondary" style={styles.duration}>
+            {formattedDuration}
           </ThemedText>
         </View>
-      </View>
 
-      {/* Right: Score */}
-      <View style={styles.rightSection}>
-        <ThemedText style={[styles.score, { color: scoreColor }]}>
-          {drive.score ?? 0}
-        </ThemedText>
-        <ThemedText variant="secondary" style={styles.scoreLabel}>
-          score
-        </ThemedText>
-      </View>
-    </Pressable>
+        {/* Center: Spill count and Difficulty badge */}
+        <View style={styles.centerSection}>
+          <View style={styles.spillContainer}>
+            <ThemedText style={styles.spillIcon}>💧</ThemedText>
+            <ThemedText style={styles.spillCount}>{drive.spillCount ?? 0}</ThemedText>
+          </View>
+          <View style={[styles.difficultyBadge, { backgroundColor: difficultyColor }]}>
+            <ThemedText style={styles.difficultyText}>
+              {formatDifficulty(drive.difficulty)}
+            </ThemedText>
+          </View>
+        </View>
+
+        {/* Right: Score */}
+        <View style={styles.rightSection}>
+          <ThemedText style={[styles.score, { color: scoreColor }]}>
+            {drive.score ?? 0}
+          </ThemedText>
+          <ThemedText variant="secondary" style={styles.scoreLabel}>
+            score
+          </ThemedText>
+        </View>
+      </Pressable>
+    </Swipeable>
   );
 }
 
@@ -202,5 +261,22 @@ const styles = StyleSheet.create({
   scoreLabel: {
     fontSize: 11,
     marginTop: -2,
+  },
+  deleteContainer: {
+    width: 80,
+    marginVertical: Spacing.xs,
+    marginRight: Spacing.md,
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: '#ff4444',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: BorderRadius.sm,
+  },
+  deleteText: {
+    color: '#ffffff',
+    fontWeight: '600',
+    fontSize: 14,
   },
 });

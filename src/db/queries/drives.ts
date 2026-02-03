@@ -97,3 +97,11 @@ export async function getDrivesList(limit = 50) {
     .orderBy(desc(drives.startTime))
     .limit(limit);
 }
+
+/**
+ * Delete a drive and all related data (events, breadcrumbs)
+ * Cascade delete handles related records automatically
+ */
+export async function deleteDrive(driveId: string): Promise<void> {
+  await db.delete(drives).where(eq(drives.id, driveId));
+}
