@@ -10,6 +10,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDatabaseMigrations } from '@/db/client';
 import { audioEngine } from '@/audio/AudioEngine';
 import { useTheme } from '@/hooks/useTheme';
+import { useSensorPipeline } from '@/hooks/useSensorPipeline';
+import { useAudioFeedback } from '@/hooks/useAudioFeedback';
+import { useDriveDetection } from '@/hooks/useDriveDetection';
 
 // Keep splash screen visible while loading
 SplashScreen.preventAutoHideAsync();
@@ -95,6 +98,24 @@ function AudioProvider({ children }: { children: React.ReactNode }) {
 }
 
 /**
+ * Sensor and audio feedback wrapper
+ * Runs sensor pipeline and audio feedback hooks at app level
+ * so they're always active regardless of which screen is shown.
+ */
+function SensorProvider({ children }: { children: React.ReactNode }) {
+  // Start sensor pipeline (accelerometer/gyroscope at 50Hz)
+  useSensorPipeline();
+
+  // Connect sensor risk to audio playback
+  useAudioFeedback();
+
+  // Initialize drive detection (GPS, permissions, state machine)
+  useDriveDetection();
+
+  return <>{children}</>;
+}
+
+/**
  * Root layout component
  * Wraps entire app with necessary providers in correct order:
  * 1. SafeAreaProvider - handles safe areas for notches/islands
@@ -115,7 +136,9 @@ export default function RootLayout() {
       <View style={[styles.root, { backgroundColor: colors.background }]}>
         <DatabaseProvider>
           <AudioProvider>
-            <Slot />
+            <SensorProvider>
+              <Slot />
+            </SensorProvider>
           </AudioProvider>
         </DatabaseProvider>
         <StatusBar style={isDark ? 'light' : 'dark'} />
