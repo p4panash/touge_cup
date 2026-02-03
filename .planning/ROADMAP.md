@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Sensor & Audio Foundation** - Validate core differentiators: 50Hz sensor sampling and sub-100ms audio latency
 - [x] **Phase 2: Background Execution & Permissions** - Enable drive detection and recording with screen off
 - [x] **Phase 3: Drive Session Management** - Persist drives, events, and scores to local database
-- [x] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
+- [ ] **Phase 4: UI & User Experience** - Build all app screens and cross-platform deployment
 - [ ] **Phase 5: Algorithm Refinement** - Implement difficulty progression and pothole forgiveness
 
 ## Phase Details
@@ -82,13 +82,14 @@ Plans:
   3. Drive summary screen displays map with route polyline and event markers
   4. History screen lists past drives with filtering by difficulty and sorting options
   5. Settings screen allows difficulty selection, volume adjustment, and sensor calibration
-**Plans:** 4 plans in 2 waves
+**Plans:** 5 plans in 2 waves
 
 Plans:
 - [x] 04-01-PLAN.md — Navigation infrastructure with expo-router, theme system, tab navigation
 - [x] 04-02-PLAN.md — Home screen (hero button, difficulty selector, recent drive) + Active drive screen (water cup animation, spill counter, streak timer)
 - [x] 04-03-PLAN.md — Drive summary screen with map, color-coded polyline, spill markers, stats breakdown
 - [x] 04-04-PLAN.md — History screen with filtering/sorting + Settings screen with preferences
+- [ ] 04-05-PLAN.md — UAT gap closure (icons, layout, navigation, persistence)
 
 ### Phase 5: Algorithm Refinement
 **Goal**: Smoothness detection adapts to user skill level and forgives road imperfections
@@ -115,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Sensor & Audio Foundation | 3/3 | Complete | 2026-02-02 |
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 4/4 | Complete | 2026-02-03 |
-| 4. UI & User Experience | 4/4 | Complete | 2026-02-03 |
+| 4. UI & User Experience | 4/5 | In Progress | - |
 | 5. Algorithm Refinement | 0/2 | Not started | - |
 
 ---
@@ -124,5 +125,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 *Phase 2 planned: 2026-02-02*
 *Phase 3 planned: 2026-02-02*
 *Phase 4 planned: 2026-02-03*
-*Total plans: 16 (estimated, refined during planning)*
+*Total plans: 17 (estimated, refined during planning)*
 *Total v1 requirements: 36 mapped*
