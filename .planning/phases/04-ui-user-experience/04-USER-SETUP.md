@@ -6,15 +6,30 @@
 
 ## Environment Variables
 
-No environment variables required for this phase.
+### GOOGLE_MAPS_API_KEY
+
+Required for Android map display. iOS uses Apple Maps (no key needed).
+
+**Setup:**
+
+1. Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Add your API key to `.env.local`:
+   ```
+   GOOGLE_MAPS_API_KEY=AIza...your-key
+   ```
+
+**For EAS Builds (production):**
+```bash
+eas secret:create --name GOOGLE_MAPS_API_KEY --value "AIza..."
+```
 
 ## Dashboard Configuration
 
 ### Google Maps SDK for Android
-
-Map display on Android requires a Google Maps API key. iOS uses Apple Maps by default (no API key needed).
-
-**Steps:**
 
 - [ ] **Create Google Cloud project and enable Maps SDK for Android**
   - Location: [Google Cloud Console](https://console.cloud.google.com/) -> APIs & Services -> Enable APIs
@@ -23,30 +38,20 @@ Map display on Android requires a Google Maps API key. iOS uses Apple Maps by de
 - [ ] **Create API key**
   - Location: [Google Cloud Console](https://console.cloud.google.com/) -> APIs & Services -> Credentials
   - Click "Create Credentials" -> "API key"
-  - Recommended: Restrict key to Android apps and Maps SDK for Android
 
-- [ ] **Add API key to app.json**
-  - Open `app.json` in project root
-  - Add the following configuration:
-  ```json
-  {
-    "expo": {
-      "android": {
-        "config": {
-          "googleMaps": {
-            "apiKey": "YOUR_API_KEY_HERE"
-          }
-        }
-      }
-    }
-  }
-  ```
+- [ ] **Restrict the API key (recommended)**
+  - Application restrictions: Android apps
+  - Add package name: `com.papanash.watercupcoach`
+  - API restrictions: Maps SDK for Android
+
+- [ ] **Add key to .env.local**
+  - See Environment Variables section above
 
 ## Verification
 
 After completing the setup:
 
-1. Run the app on an Android device or emulator:
+1. Rebuild the app (env vars are read at build time):
    ```bash
    npx expo run:android
    ```
