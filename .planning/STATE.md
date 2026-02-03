@@ -2,26 +2,27 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-01)
+See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Real-time audio feedback that trains smooth driving through muscle memory, without visual distraction.
-**Current focus:** Phase 5 - Algorithm Refinement COMPLETE
+**Current focus:** v1.0 MVP SHIPPED — Ready for next milestone
 
 ## Current Position
 
-Phase: 5 of 5 (Algorithm Refinement)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 - Completed 05-03-PLAN.md (Difficulty Integration)
+Phase: None (milestone complete)
+Plan: None
+Status: v1.0 shipped
+Last activity: 2026-02-03 — v1.0 milestone complete
 
-Progress: [####################] 100% (19/19 plans complete)
+Progress: [####################] 100% (v1.0 complete)
 
 ## Performance Metrics
 
-**Velocity:**
-- Total plans completed: 19
-- Average duration: 7 min
+**v1.0 Summary:**
+- Total plans completed: 18
 - Total execution time: 133 min
+- Average duration per plan: 7 min
+- Timeline: 3 days (Feb 1-3, 2026)
 
 **By Phase:**
 
@@ -33,82 +34,12 @@ Progress: [####################] 100% (19/19 plans complete)
 | 04-ui-user-experience | 5 | 15 min | 3 min |
 | 05-algorithm-refinement | 3 | 20 min | 7 min |
 
-**Recent Trend:**
-- Last 5 plans: 04-05 (4 min), 05-01 (8 min), 05-02 (4 min), 05-03 (8 min)
-- Note: 05-03 integrated pothole and ambient into difficulty-aware audio system
-
-*Updated after each plan completion*
-
 ## Accumulated Context
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- [Roadmap]: 5 phases for v1, vehicle integration (CarPlay/Android Auto) deferred to v2
-- [Roadmap]: Sensor + audio foundation is Phase 1 (highest risk, validate early)
-- [01-01]: Used DeviceMotion.acceleration instead of raw Accelerometer - already gravity-compensated by OS
-- [01-01]: 2Hz low-pass filter cutoff - preserves driving dynamics while removing vibration noise
-- [01-01]: Separate Zustand store for sensors - avoids performance issues with 50Hz updates
-- [01-02]: Used actual timestamp deltas for jerk calculation - critical for Android variable intervals
-- [01-02]: Z-axis excluded from jerk magnitude - vertical motion is road surface, not driving smoothness
-- [01-02]: 1500ms settling period - middle of 1-2s range, prevents false positives during mounting
-- [01-03]: Switched from react-native-audio-api to expo-av - better Expo compatibility, simpler API
-- [01-03]: Zone-based audio trigger (0-0.3, 0.3-0.5, 0.5-0.7, 0.7+) for graduated feedback
-- [01-03]: 2500ms spill cooldown - middle of 2-3s range, balances feedback vs annoyance
-- [02-01]: DriveState as discriminated union - enables exhaustive type checking in state machine
-- [02-01]: Speed threshold 15 km/h (4.17 m/s) - high enough to avoid false positives from walking
-- [02-01]: Stop duration 120s - long enough to handle traffic lights and brief stops
-- [02-02]: BackgroundTaskRegistry imported first in index.ts - ensures task defined before React
-- [02-02]: Callback pattern for location updates - decouples background task from state management
-- [02-02]: Foreground service with deferred updates - balances accuracy vs battery
-- [02-03]: Pure state machine (processLocation) - returns new state, no side effects, testable
-- [02-03]: Sensors always on when app open - instant feedback when drive begins
-- [02-03]: Audio gated by isDriving - prevents false triggers when stationary
-- [02-03]: Process ALL batch locations - single location missed state transitions
-- [03-01]: UUID primary keys for drives/events/breadcrumbs - enables future cross-device sync
-- [03-01]: timestamp_ms mode for all timestamps - millisecond precision consistent with JS Date.now()
-- [03-01]: Drizzle relations exported alongside tables - required for relational queries
-- [03-01]: enableChangeListener on database open - required for useLiveQuery support
-- [03-02]: Convert ms timestamps to Date objects for Drizzle timestamp_ms mode
-- [03-02]: 5-second breadcrumb throttling internal to DriveRecorder
-- [03-02]: Non-blocking .catch() pattern for all database operations
-- [03-03]: Severity brackets: <0.5 = low (5pts), 0.5-0.7 = medium (10pts), >=0.7 = high (15pts)
-- [03-03]: Duration bonus +1 per 5 min, capped at 10 - rewards longer drives
-- [03-03]: Perfect drive bonus +5 if zero spills - gamification incentive
-- [03-03]: Score clamped 0-100 range - never negative or above 100
-- [03-04]: Database initializes before audio engine - enables future DB access during audio callbacks
-- [03-04]: DatabaseProvider wrapper pattern - clean separation of initialization concerns
-- [04-01]: userInterfaceStyle: automatic - enables system dark mode support
-- [04-01]: Background task import first in root layout - maintains Phase 2 initialization order
-- [04-01]: Provider hierarchy: SafeArea > Database > Audio > Slot - ensures dependencies ready before content
-- [04-01]: Emoji tab icons - simple placeholder, can upgrade to lucide-react-native later
-- [04-02]: useAnimatedSensor for 60fps water animation - runs entirely on UI thread, no JS bridge bottleneck
-- [04-02]: Fill level decreases by 0.1 per spill (minimum 0.1 to keep visual appeal)
-- [04-02]: Streak timer shows time since last spill, or since drive start if no spills
-- [04-03]: Color coding: <50m/10s=red, <100m/30s=orange, else=green for polyline proximity
-- [04-03]: Score colors: >80 green, 50-80 yellow, <50 red
-- [04-03]: Map upper half, scrollable stats lower half layout
-- [04-04]: Reused DifficultySelector from home screen in settings for consistency
-- [04-04]: Keep-awake reads from settings store, wired in active drive screen
-- [04-04]: Audio section is placeholder for Phase 5
-- [04-05]: lucide-react-native for tab icons - standard React Native SVG icon library
-- [04-05]: Partial persist for sensor store - only difficulty persists via AsyncStorage
-- [04-05]: resetSensorState() action separates sensor reset from difficulty reset
-- [04-05]: Done button in summary header with router.replace prevents back-to-active
-- [05-01]: Z_THRESHOLD 3.9 m/s^2 (0.4g) for pothole detection - based on PMC research
-- [05-01]: MAX_POTHOLE_DURATION_MS 200ms distinguishes potholes from speed bumps
-- [05-01]: CLUSTER_WINDOW_MS 7000ms groups consecutive potholes as rough road
-- [05-01]: HYSTERESIS_FACTOR 0.5 prevents noise from prematurely ending spike detection
-- [05-02]: PreloadedSoundName type for one-shot sounds, SoundName includes ambient
-- [05-02]: MIN_VOLUME 0.15, MAX_VOLUME 0.7 - leaves headroom for spill sound
-- [05-02]: 30fps (33ms interval) volume interpolation for smooth transitions
-- [05-02]: 2500ms rebuild delay matches spill cooldown from Phase 1
-- [05-03]: Pothole events pushed from SensorPipeline to store, consumed by useAudioFeedback
-- [05-03]: Master mode pothole-as-spill triggers evaluate(1.0, true) for dramatic sound
-- [05-03]: Pothole zPeak normalized by /10 for severity (0-1 range)
-- [05-03]: Ambient cleanup on difficulty change OR drive end
+All v1 decisions have been evaluated and marked with outcomes.
 
 ### Pending Todos
 
@@ -116,15 +47,15 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- [Research]: CarPlay entitlement should be submitted early even though implementation is v2 (weeks-long approval)
-- [Research]: Android sensor throttling varies by OEM - must validate on Samsung/Pixel/OnePlus early in Phase 1
-- [Research]: Bluetooth audio adds 100-300ms latency - may need user warning
+- [v1.1]: CarPlay entitlement should be submitted early (weeks-long approval)
+- [Device]: Android sensor throttling varies by OEM - must validate on Samsung/Pixel/OnePlus
+- [Device]: Bluetooth audio adds 100-300ms latency - may need user warning
 
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 05-03-PLAN.md (Difficulty Integration) - Phase 5 COMPLETE
+Stopped at: v1.0 milestone archived
 Resume file: None
 
 ---
-*All 5 phases complete. Ready for device testing and v1 release preparation.*
+*v1.0 shipped. Next step: `/gsd:new-milestone` for v1.1 planning.*

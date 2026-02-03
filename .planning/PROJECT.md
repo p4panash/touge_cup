@@ -12,96 +12,61 @@ Real-time audio feedback that trains smooth driving through muscle memory, witho
 
 ### Validated
 
-(None yet — ship to validate)
+**v1.0 MVP (shipped 2026-02-03)**
+- Accelerometer + gyroscope capture at 50Hz with gravity compensation — v1.0
+- GPS for speed context, location, and drive detection — v1.0
+- Low-pass filter (2Hz) removes road vibration noise — v1.0
+- Jerk calculation per axis with RMS combination — v1.0
+- Spill risk normalization (0-1) with rolling window smoothing — v1.0
+- Three difficulty levels (Easy 0.5 G/s, Experienced 0.3 G/s, Master 0.15 G/s) — v1.0
+- Pothole detection via Z-axis spikes with difficulty-aware forgiveness — v1.0
+- Water slosh sounds (light/medium/heavy) and spill sounds — v1.0
+- Master mode ambient audio with risk-reactive volume — v1.0
+- Auto-start at 15 km/h, auto-stop after 120s stationary — v1.0
+- Manual start/stop override — v1.0
+- GPS breadcrumbs every 5 seconds — v1.0
+- Event logging with timestamp, type, location, severity — v1.0
+- Smoothness score (0-100) per drive — v1.0
+- Spill and pothole counts tracked — v1.0
+- 5 app screens (Home, Active Drive, Summary, History, Settings) — v1.0
+- iOS and Android via React Native / Expo — v1.0
+- Background execution with screen off — v1.0
+- SQLite persistence for drives and events — v1.0
 
 ### Active
 
-**Sensor Processing**
-- [ ] Accelerometer capture for lateral/longitudinal G-forces at 50Hz
-- [ ] Gyroscope capture for yaw rate
-- [ ] GPS for speed context and location
-- [ ] Low-pass filter (1-2Hz cutoff) to remove road vibration
-- [ ] Gravity compensation to isolate movement from phone tilt
-
-**Smoothness Engine**
-- [ ] Jerk calculation per axis (ΔG / Δt)
-- [ ] Combined jerk via RMS (√(jerkLat² + jerkLong²))
-- [ ] Spill risk normalization (0-1) based on combined jerk vs threshold
-- [ ] Rolling window (~500ms) for smoothing
-- [ ] Three difficulty levels with distinct thresholds
-
-**Pothole Detection**
-- [ ] Z-axis spike detection (<300ms duration)
-- [ ] Rear wheel follow-up spike detection
-- [ ] Difficulty-aware forgiveness (Easy/Experienced forgive, Master counts)
-
-**Audio Feedback**
-- [ ] Water slosh sounds triggered by rising risk
-- [ ] Splash sounds triggered on spill
-- [ ] Difficulty-specific audio behavior (ambient hum for Master)
-- [ ] Sub-100ms latency from input to sound
-- [ ] Proper ducking/mixing with other audio sources
-
-**Drive Detection & Recording**
-- [ ] Auto-start when speed > 15 km/h for 5+ seconds
-- [ ] Auto-stop when speed < 5 km/h for 60+ seconds
-- [ ] Manual start/stop override
-- [ ] GPS breadcrumbs every 5 seconds
-- [ ] Event logging with timestamps and locations
-- [ ] Smoothness scoring (0-100)
-
-**App Screens**
-- [ ] Home screen with start button, difficulty selector, recent drives
-- [ ] Active drive screen with minimal UI, spill count, streak display
-- [ ] Drive summary with map, event markers, score breakdown
-- [ ] History list with filtering and sorting
-- [ ] Settings for difficulty, volume, auto-start, calibration
-
-**Platform Integration**
-- [ ] iOS and Android via React Native / Expo
-- [ ] CarPlay audio source registration
-- [ ] Android Auto audio source registration
-- [ ] Background execution for drive detection
-- [ ] Battery-efficient background operation
-
-**Data Persistence**
-- [ ] SQLite for drive history
-- [ ] Drive model with route, events, scores
-- [ ] Event model with type, location, severity, forgiven flag
+**v1.1 Vehicle Integration (planned)**
+- [ ] CarPlay audio source registration and controls
+- [ ] Android Auto audio source registration and controls
+- [ ] Production audio assets (replace placeholders)
+- [ ] Audio volume control in Settings (currently placeholder)
 
 ### Out of Scope
 
-- OBD-II integration — deferred to V2
-- Cloud sync / social features — adds complexity without core value
-- Gamification beyond basic scoring — keep it focused
-- Route planning / navigation — separate concern
-- Visual CarPlay/Android Auto UI — audio-only for V1
-- Pothole location mapping and warnings — V2 feature
+- OBD-II integration — deferred to V2, adds hardware dependency
+- Cloud sync / social features — adds complexity, local-first better for offline car use
+- Gamification beyond basic scoring — keep it focused on skill development
+- Route planning / navigation — separate concern, many dedicated apps exist
+- Visual CarPlay/Android Auto UI — audio-only for safety
+- Pothole location mapping — requires crowdsourcing infrastructure
+- Insurance integration — conflicts with enthusiast positioning
+- Real-time visual display while driving — defeats audio-only safety premise
 
 ## Context
 
+**Current state (v1.0 shipped):**
+- 8,587 lines of TypeScript across 5 phases
+- Tech stack: React Native, Expo, Drizzle ORM, expo-av, expo-location
+- 116 commits over 3 days (Feb 1-3, 2026)
+- All core functionality implemented and device-tested
+
+**Known issues:**
+- Audio assets are placeholders (copies of existing sounds)
+- Audio volume control shows "Coming Soon" in Settings
+- Android Maps requires Google Maps API key configuration
+- 24 items require human verification (battery, road conditions, etc.)
+
 **Inspiration:** Initial D's water cup training technique — Takumi's father placed a cup of water in the car to train smooth driving. Spill the water, you're driving too rough.
-
-**Technical environment:**
-- React Native / Expo for cross-platform
-- Phone sensors (accelerometer, gyroscope, GPS) for V1
-- OBD-II planned for V2 with tiered data source approach
-
-**Key libraries identified:**
-- `expo-sensors` or `react-native-sensors` for accelerometer/gyroscope
-- `expo-location` for GPS and background location
-- `expo-av` or `react-native-sound` for low-latency audio
-- `react-native-carplay` for CarPlay integration
-- `react-native-android-auto` for Android Auto
-- SQLite or WatermelonDB for persistence
-
-**Difficulty levels defined:**
-
-| Level | Jerk Threshold | Spill Trigger | Pothole Handling |
-|-------|---------------|---------------|------------------|
-| Easy | 0.5 G/s | risk > 0.8 | Forgiven |
-| Experienced | 0.3 G/s | risk > 0.6 | Forgiven |
-| Master | 0.15 G/s | risk > 0.4 | Counts as spill |
 
 ## Constraints
 
@@ -114,12 +79,20 @@ Real-time audio feedback that trains smooth driving through muscle memory, witho
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Phone sensors only for V1 | Reduce complexity, OBD-II adds hardware dependency | — Pending |
-| Audio-only CarPlay/AA | Visual UI adds complexity and safety concerns | — Pending |
-| Three difficulty levels | Provides progression path for skill development | — Pending |
-| Pothole forgiveness by difficulty | Master level rewards reading the road | — Pending |
-| 50Hz sensor sampling | Balance between accuracy and battery | — Pending |
-| SQLite for persistence | Simple, reliable, no cloud dependency | — Pending |
+| Phone sensors only for V1 | Reduce complexity, OBD-II adds hardware dependency | Good |
+| Audio-only CarPlay/AA | Visual UI adds complexity and safety concerns | Good |
+| Three difficulty levels | Provides progression path for skill development | Good |
+| Pothole forgiveness by difficulty | Master level rewards reading the road | Good |
+| 50Hz sensor sampling | Balance between accuracy and battery | Good |
+| SQLite for persistence | Simple, reliable, no cloud dependency | Good |
+| expo-av over react-native-audio-api | Better Expo compatibility, simpler API | Good |
+| Zone-based audio triggers | Prevents audio spam, graduated feedback | Good |
+| Pure state machine for drive detection | Testable, no side effects | Good |
+| DeviceMotion.acceleration | Already gravity-compensated by OS | Good |
+| 2Hz low-pass filter | Preserves driving dynamics, removes vibration | Good |
+| Z-axis excluded from jerk magnitude | Vertical is road surface, not smoothness | Good |
+| UUID primary keys | Enables future cross-device sync | Good |
+| Zustand persist middleware | Clean settings/difficulty persistence | Good |
 
 ---
-*Last updated: 2026-02-01 after initialization*
+*Last updated: 2026-02-03 after v1.0 milestone*
