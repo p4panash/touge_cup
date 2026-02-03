@@ -100,11 +100,12 @@ Plans:
   2. Potholes are detected via Z-axis spikes and marked separately from driver errors
   3. Easy and Experienced modes forgive potholes; Master mode counts them as spills
   4. Master mode plays ambient hum and dramatic splash sounds with streak-broken feedback
-**Plans**: TBD
+**Plans:** 3 plans in 2 waves
 
 Plans:
-- [ ] 05-01: Difficulty level system with distinct thresholds
-- [ ] 05-02: Pothole detection and forgiveness logic
+- [ ] 05-01-PLAN.md — Pothole detection system (Z-axis spike analysis, duration filtering, clustering)
+- [ ] 05-02-PLAN.md — Master mode ambient audio (reactive soundscape, volume interpolation, spill silence)
+- [ ] 05-03-PLAN.md — Difficulty-aware feedback integration (wire pothole and ambient to useAudioFeedback)
 
 ## Progress
 
@@ -117,7 +118,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Background Execution & Permissions | 3/3 | Complete | 2026-02-02 |
 | 3. Drive Session Management | 4/4 | Complete | 2026-02-03 |
 | 4. UI & User Experience | 5/5 | Complete | 2026-02-03 |
-| 5. Algorithm Refinement | 0/2 | Not started | - |
+| 5. Algorithm Refinement | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-01*
@@ -125,5 +126,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 *Phase 2 planned: 2026-02-02*
 *Phase 3 planned: 2026-02-02*
 *Phase 4 planned: 2026-02-03*
-*Total plans: 17 (estimated, refined during planning)*
+*Phase 5 planned: 2026-02-03*
+*Total plans: 18*
 *Total v1 requirements: 36 mapped*
