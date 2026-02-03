@@ -29,6 +29,7 @@ export function useSensorPipeline() {
   const setSettling = useSensorStore((state) => state.setSettling);
   const setLatestData = useSensorStore((state) => state.setLatestData);
   const updateRisk = useSensorStore((state) => state.updateRisk);
+  const setPothole = useSensorStore((state) => state.setPothole);
   const resetSensorState = useSensorStore((state) => state.resetSensorState);
 
   /**
@@ -69,6 +70,11 @@ export function useSensorPipeline() {
 
         // Update store with risk values
         updateRisk(result.risk, result.isSpill, result.jerk.magnitude);
+
+        // Push pothole event to store if detected
+        if (result.pothole) {
+          setPothole(result.pothole);
+        }
       }
     });
 
@@ -89,6 +95,7 @@ export function useSensorPipeline() {
     setSettling,
     setLatestData,
     updateRisk,
+    setPothole,
   ]);
 
   /**
