@@ -53,16 +53,16 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### App Screens
 
-- [ ] **SCRN-01**: Home screen displays start button, difficulty selector, and recent drives summary
-- [ ] **SCRN-02**: Active drive screen shows minimal UI with spill count and current streak
-- [ ] **SCRN-03**: Drive summary screen displays post-drive stats, map with event markers, and score breakdown
-- [ ] **SCRN-04**: History screen lists past drives with filtering by difficulty and sorting by score/date
-- [ ] **SCRN-05**: Settings screen provides difficulty selection, audio volume, auto-start toggle, and sensor calibration
+- [x] **SCRN-01**: Home screen displays start button, difficulty selector, and recent drives summary
+- [x] **SCRN-02**: Active drive screen shows minimal UI with spill count and current streak
+- [x] **SCRN-03**: Drive summary screen displays post-drive stats, map with event markers, and score breakdown
+- [x] **SCRN-04**: History screen lists past drives with filtering by difficulty and sorting by score/date
+- [x] **SCRN-05**: Settings screen provides difficulty selection, audio volume, auto-start toggle, and sensor calibration
 
 ### Platform & Infrastructure
 
-- [ ] **PLAT-01**: App runs on iOS via React Native / Expo
-- [ ] **PLAT-02**: App runs on Android via React Native / Expo
+- [x] **PLAT-01**: App runs on iOS via React Native / Expo
+- [x] **PLAT-02**: App runs on Android via React Native / Expo
 - [ ] **PLAT-03**: Background execution allows drive detection and recording with screen off
 - [x] **PLAT-04**: SQLite database stores drive history and events locally
 - [ ] **PLAT-05**: Battery-efficient background operation (<10% for 1-hour drive)
@@ -141,13 +141,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCOR-02 | Phase 3 | Pending |
 | SCOR-03 | Phase 3 | Pending |
 | SCOR-04 | Phase 3 | Pending |
-| SCRN-01 | Phase 4 | Pending |
-| SCRN-02 | Phase 4 | Pending |
-| SCRN-03 | Phase 4 | Pending |
-| SCRN-04 | Phase 4 | Pending |
-| SCRN-05 | Phase 4 | Pending |
-| PLAT-01 | Phase 4 | Pending |
-| PLAT-02 | Phase 4 | Pending |
+| SCRN-01 | Phase 4 | Complete |
+| SCRN-02 | Phase 4 | Complete |
+| SCRN-03 | Phase 4 | Complete |
+| SCRN-04 | Phase 4 | Complete |
+| SCRN-05 | Phase 4 | Complete |
+| PLAT-01 | Phase 4 | Complete |
+| PLAT-02 | Phase 4 | Complete |
 | PLAT-03 | Phase 2 | Pending |
 | PLAT-04 | Phase 3 | Pending |
 | PLAT-05 | Phase 2 | Pending |
