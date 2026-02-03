@@ -1,14 +1,6 @@
 import { Tabs } from 'expo-router';
-import { Text, StyleSheet } from 'react-native';
+import { Home, BarChart3, Settings } from 'lucide-react-native';
 import { useTheme } from '@/hooks/useTheme';
-
-/**
- * Tab bar icon component using emoji
- * Simple placeholder - can be replaced with lucide-react-native icons later
- */
-function TabIcon({ emoji, color }: { emoji: string; color: string }) {
-  return <Text style={[styles.icon, { color }]}>{emoji}</Text>;
-}
 
 /**
  * Tab layout with three tabs: Home, History, Settings
@@ -38,7 +30,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           headerTitle: 'Water Cup Coach',
-          tabBarIcon: ({ color }) => <TabIcon emoji="🏠" color={color} />,
+          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -46,22 +38,16 @@ export default function TabLayout() {
         options={{
           title: 'History',
           headerShown: false, // History has its own stack with header
-          tabBarIcon: ({ color }) => <TabIcon emoji="📊" color={color} />,
+          tabBarIcon: ({ color }) => <BarChart3 size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <TabIcon emoji="⚙️" color={color} />,
+          tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
         }}
       />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  icon: {
-    fontSize: 24,
-  },
-});
