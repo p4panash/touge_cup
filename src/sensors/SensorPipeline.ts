@@ -6,6 +6,7 @@ import {
   DifficultyLevel,
 } from './processors/SpillRiskNormalizer';
 import { RollingWindow } from './processors/RollingWindow';
+import { PotholeDetector, PotholeEvent } from './processors/PotholeDetector';
 
 /**
  * Result from processing a sensor sample
@@ -17,6 +18,10 @@ export interface PipelineResult {
   isSpill: boolean;
   /** Jerk values for debugging/display */
   jerk: JerkResult;
+  /** Filtered Z-axis acceleration for pothole detection (m/s^2) */
+  zAccelFiltered: number;
+  /** Detected pothole event, or null if none */
+  pothole: PotholeEvent | null;
 }
 
 /**
@@ -38,6 +43,7 @@ export class SensorPipeline {
   private jerkCalc: JerkCalculator;
   private riskNorm: SpillRiskNormalizer;
   private rollingWindow: RollingWindow;
+  private potholeDetector: PotholeDetector;
 
   /**
    * Create a new sensor pipeline
@@ -50,6 +56,7 @@ export class SensorPipeline {
     this.jerkCalc = new JerkCalculator();
     this.riskNorm = new SpillRiskNormalizer();
     this.rollingWindow = new RollingWindow(windowMs);
+    this.potholeDetector = new PotholeDetector();
   }
 
   /**
@@ -80,10 +87,16 @@ export class SensorPipeline {
       timestamp * 1000
     );
 
+    // 5. Detect potholes from filtered Z-axis acceleration
+    // Note: timestamp is in seconds, convert to ms for pothole detector
+    const pothole = this.potholeDetector.detect(filtered.z, timestamp * 1000);
+
     return {
       risk: smoothedRisk,
       isSpill,
       jerk,
+      zAccelFiltered: filtered.z,
+      pothole,
     };
   }
 
@@ -110,5 +123,6 @@ export class SensorPipeline {
     this.lowPass.reset();
     this.jerkCalc.reset();
     this.rollingWindow.reset();
+    this.potholeDetector.reset();
   }
 }
