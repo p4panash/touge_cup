@@ -68,15 +68,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   heroSection: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: Spacing.xl,
   },
   difficultyWrapper: {
     marginTop: Spacing.sm,
   },
   recentContainer: {
     width: '100%',
+    marginTop: Spacing.lg,
     paddingBottom: Spacing.md,
   },
 });
