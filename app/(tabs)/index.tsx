@@ -12,7 +12,14 @@ import { Spacing } from '@/theme/spacing';
 /**
  * Home screen — the garage
  *
- * Clean, minimal layout with engine start/stop aesthetic.
+ * Layout (top → bottom):
+ *   Title group (subtitle)
+ *   ↕ flexible space
+ *   Drive group (start button + difficulty pills)
+ *   ↕ some space
+ *   Last Delivery card
+ *   ↕ small space
+ *   Tab bar (rendered by layout)
  */
 export default function HomeScreen() {
   const router = useRouter();
@@ -28,18 +35,25 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Hero Section */}
-      <View style={styles.heroSection}>
+      {/* Title group */}
+      <View style={styles.titleGroup}>
         <ThemedText variant="secondary" style={styles.subtitle}>
           Smooth driving through sound
         </ThemedText>
+      </View>
+
+      {/* Flexible spacer pushes drive group toward center */}
+      <View style={styles.spacer} />
+
+      {/* Drive group: button + difficulty */}
+      <View style={styles.driveGroup}>
         <StartButton onPress={handleStartDrive} disabled={isDriving} />
         <View style={styles.difficultyWrapper}>
           <DifficultySelector />
         </View>
       </View>
 
-      {/* Recent Drive */}
+      {/* Last Delivery */}
       <View style={styles.recentContainer}>
         <RecentDrive drive={recentDrive} />
       </View>
@@ -52,18 +66,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
+  },
+  titleGroup: {
+    alignItems: 'center',
     paddingTop: Spacing.sm,
   },
   subtitle: {
     fontSize: 13,
     textAlign: 'center',
     letterSpacing: 0.5,
-    marginBottom: Spacing.lg,
   },
-  heroSection: {
+  spacer: {
     flex: 1,
+  },
+  driveGroup: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
   difficultyWrapper: {
     marginTop: Spacing.sm,
@@ -71,6 +88,6 @@ const styles = StyleSheet.create({
   recentContainer: {
     width: '100%',
     marginTop: Spacing.lg,
-    paddingBottom: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
 });
