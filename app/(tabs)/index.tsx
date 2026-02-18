@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   difficultyWrapper: {
-    marginTop: Spacing.md,
+    marginTop: Spacing.sm,
   },
   recentContainer: {
     width: '100%',
