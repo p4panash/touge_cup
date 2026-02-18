@@ -56,11 +56,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xl,
+    paddingTop: Spacing.sm,
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
   subtitle: {
     fontSize: 13,
@@ -73,10 +73,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   difficultyWrapper: {
-    marginTop: Spacing.lg,
+    marginTop: Spacing.md,
   },
   recentContainer: {
     width: '100%',
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing.md,
   },
 });
