@@ -1,29 +1,35 @@
 /**
- * Light and dark mode color definitions
- * Used by useTheme hook to provide system-adaptive colors
+ * Tofu Coach — JDM-inspired color palette
+ *
+ * Warm tones inspired by mountain passes at night,
+ * the glow of taillights, and Fujiwara Tofu Shop aesthetics.
  */
 export const Colors = {
   light: {
-    background: '#ffffff',
-    surface: '#f5f5f5',
-    text: '#1a1a1a',
-    textSecondary: '#666666',
-    primary: '#00d4ff',
-    danger: '#ff4444',
-    success: '#00ff00',
-    warning: '#ffaa00',
-    border: '#e0e0e0',
+    background: '#faf8f5',
+    surface: '#f0ece6',
+    text: '#2c2416',
+    textSecondary: '#8a7e6b',
+    primary: '#d4583a',       // warm touge red — taillights on mountain roads
+    primaryMuted: '#e8a490',  // softer red for backgrounds
+    danger: '#c93030',
+    success: '#4a9e6b',       // mountain green
+    warning: '#d4943a',       // amber headlights
+    border: '#ddd5c8',
+    accent: '#6b8f71',        // forest accent
   },
   dark: {
-    background: '#1a1a2e',
-    surface: '#2a2a4e',
-    text: '#ffffff',
-    textSecondary: '#888888',
-    primary: '#00d4ff',
-    danger: '#ff4444',
-    success: '#00ff00',
-    warning: '#ffaa00',
-    border: '#3a3a5e',
+    background: '#1a1714',
+    surface: '#2a2520',
+    text: '#f0ece6',
+    textSecondary: '#9a8e7b',
+    primary: '#e06b4f',       // warm touge red — brighter in dark
+    primaryMuted: '#4a2a20',  // muted red for dark backgrounds
+    danger: '#e04040',
+    success: '#5ab87d',       // mountain green
+    warning: '#e0a84f',       // amber headlights
+    border: '#3a3530',
+    accent: '#7dab83',        // forest accent
   },
 };
 

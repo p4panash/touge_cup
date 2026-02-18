@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
@@ -7,28 +7,25 @@ import { DifficultySelector } from '@/components/home/DifficultySelector';
 import { RecentDrive } from '@/components/home/RecentDrive';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveHistory } from '@/hooks/useDriveHistory';
+import { useTheme } from '@/hooks/useTheme';
 import { Spacing } from '@/theme/spacing';
 
 /**
- * Home screen - primary entry point for users
+ * Home screen — the garage
  *
- * Displays:
- * - App title
- * - Hero start button (dominant primary action)
- * - Difficulty selector (Easy | Experienced | Master)
- * - Most recent completed drive card
+ * Clean, minimal layout with tofu delivery aesthetic.
+ * Japanese text accents for Initial D flavor.
  */
 export default function HomeScreen() {
   const router = useRouter();
+  const { colors, isDark } = useTheme();
   const { startManual, isDriving } = useDriveDetection();
   const { drives, loading } = useDriveHistory(1);
 
   const recentDrive = drives.length > 0 ? drives[0] : null;
 
   const handleStartDrive = () => {
-    // Start the drive state machine
     startManual();
-    // Navigate to active drive screen
     router.push('/drive/active');
   };
 
@@ -36,15 +33,18 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       {/* App Title */}
       <View style={styles.header}>
+        <Text style={[styles.titleJP, { color: colors.textSecondary }]}>
+          豆腐コーチ
+        </Text>
         <ThemedText variant="title" style={styles.title}>
-          Water Cup Coach
+          Tofu Coach
         </ThemedText>
         <ThemedText variant="secondary" style={styles.subtitle}>
-          Train smooth driving with audio feedback
+          Smooth driving through sound
         </ThemedText>
       </View>
 
-      {/* Hero Section: Start Button + Difficulty Selector as cohesive unit */}
+      {/* Hero Section */}
       <View style={styles.heroSection}>
         <StartButton onPress={handleStartDrive} disabled={isDriving} />
         <View style={styles.difficultyWrapper}>
@@ -69,16 +69,24 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing.xl,
+    marginBottom: Spacing.lg,
+  },
+  titleJP: {
+    fontSize: 13,
+    fontWeight: '300',
+    letterSpacing: 6,
+    marginBottom: 4,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '700',
+    letterSpacing: 1,
     marginBottom: Spacing.xs,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     textAlign: 'center',
+    letterSpacing: 0.5,
   },
   heroSection: {
     flex: 1,

@@ -16,7 +16,6 @@ interface SpillCounterProps {
 export function SpillCounter({ count }: SpillCounterProps) {
   const { colors } = useTheme();
 
-  // Color changes based on spill count for visual feedback
   const countColor = count === 0
     ? colors.success
     : count < 3
@@ -42,11 +41,13 @@ const styles = StyleSheet.create({
   },
   count: {
     fontSize: 48,
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
   label: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: Spacing.xs,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
 });

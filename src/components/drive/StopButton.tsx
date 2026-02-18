@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, View } from 'react-native';
+import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { ThemedText } from '../shared/ThemedText';
 import { Spacing, BorderRadius } from '../../theme/spacing';
@@ -9,9 +9,7 @@ interface StopButtonProps {
 
 /**
  * Stop button for ending an active drive
- *
- * Clearly visible danger-colored button to manually end the drive.
- * Per CONTEXT.md: "Visible stop button - clear button to end drive manually at any time"
+ * Danger-colored with Japanese accent text
  */
 export function StopButton({ onPress }: StopButtonProps) {
   const { colors } = useTheme();
@@ -28,7 +26,10 @@ export function StopButton({ onPress }: StopButtonProps) {
         },
       ]}
     >
-      <ThemedText style={styles.text}>STOP</ThemedText>
+      <View style={styles.content}>
+        <Text style={styles.textJP}>停止</Text>
+        <ThemedText style={styles.text}>STOP</ThemedText>
+      </View>
     </Pressable>
   );
 }
@@ -41,9 +42,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  textJP: {
+    fontSize: 16,
+    fontWeight: '300',
+    color: 'rgba(255,255,255,0.7)',
+    letterSpacing: 2,
+  },
   text: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
+    letterSpacing: 2,
   },
 });

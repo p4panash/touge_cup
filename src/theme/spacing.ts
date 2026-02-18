@@ -7,15 +7,16 @@ export const Spacing = {
   sm: 8,
   md: 16,
   lg: 24,
-  xl: 32,
+  xl: 40,
 };
 
 /**
  * Border radius constants
- * Consistent rounding across all components
+ * Softer, more refined rounding
  */
 export const BorderRadius = {
   sm: 8,
-  md: 12,
-  lg: 20,
+  md: 14,
+  lg: 22,
+  full: 999,
 };

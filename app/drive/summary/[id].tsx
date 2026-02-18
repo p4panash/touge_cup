@@ -83,8 +83,8 @@ export default function DriveSummaryScreen() {
         <View style={styles.infoSection}>
           <ThemedText variant="secondary" style={styles.infoText}>
             {spillEvents.length === 0
-              ? 'No spills recorded - great driving!'
-              : `${spillEvents.length} spill${spillEvents.length === 1 ? '' : 's'} detected. Tap markers on map for details.`}
+              ? 'Clean delivery — not a drop spilled!'
+              : `${spillEvents.length} spill${spillEvents.length === 1 ? '' : 's'} on this run. Tap markers on map for details.`}
           </ThemedText>
         </View>
 
