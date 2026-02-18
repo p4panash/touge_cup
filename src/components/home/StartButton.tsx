@@ -8,73 +8,65 @@ interface StartButtonProps {
 }
 
 /**
- * Engine start/stop button — inspired by modern car ignition buttons
+ * Engine start/stop button — inspired by real car ignition buttons
  *
- * Metallic outer ring, red center with power icon.
- * Designed to feel premium and tactile.
+ * Layered construction: chrome bezel → groove → red button face
+ * with highlight arc for 3D depth. Power icon centered.
  */
 export function StartButton({ onPress, disabled = false }: StartButtonProps) {
   const { colors, isDark } = useTheme();
 
-  const ringColor = isDark
-    ? 'rgba(255,255,255,0.08)'
-    : 'rgba(0,0,0,0.06)';
-
-  const ringBorder = isDark
-    ? 'rgba(255,255,255,0.12)'
-    : 'rgba(0,0,0,0.08)';
-
   return (
     <View style={styles.wrapper}>
-      {/* Metallic outer ring */}
+      {/* Chrome bezel ring */}
       <View
         style={[
-          styles.outerRing,
+          styles.bezel,
           {
-            backgroundColor: ringColor,
-            borderColor: ringBorder,
+            backgroundColor: isDark ? '#2a2a2a' : '#d4d4d4',
+            borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
           },
         ]}
       >
-        {/* Inner shadow ring for depth */}
+        {/* Groove / channel */}
         <View
           style={[
-            styles.innerRing,
+            styles.groove,
             {
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.05)'
-                : 'rgba(0,0,0,0.03)',
+              backgroundColor: isDark ? '#0a0a0a' : '#e8e4de',
             },
           ]}
         >
+          {/* Button face */}
           <Pressable
             onPress={onPress}
             disabled={disabled}
             style={({ pressed }) => [
               styles.button,
               {
-                backgroundColor: disabled
-                  ? colors.textSecondary
-                  : colors.primary,
-                opacity: pressed ? 0.85 : 1,
+                backgroundColor: disabled ? colors.textSecondary : colors.primary,
+                opacity: pressed ? 0.9 : 1,
                 transform: [{ scale: pressed ? 0.97 : 1 }],
                 shadowColor: disabled ? '#000' : colors.primary,
               },
             ]}
           >
+            {/* Highlight arc overlay */}
+            <View style={styles.highlightArc} />
+
             <View style={styles.content}>
               {/* Power icon */}
-              <Svg width={36} height={36} viewBox="0 0 24 24" fill="none" style={styles.icon}>
+              <Svg width={40} height={40} viewBox="0 0 24 24" fill="none" style={styles.icon}>
                 <Path
                   d="M12 2v8"
-                  stroke="rgba(255,255,255,0.9)"
-                  strokeWidth={2}
+                  stroke="rgba(255,255,255,0.95)"
+                  strokeWidth={2.5}
                   strokeLinecap="round"
                 />
                 <Path
                   d="M16.24 7.76a6 6 0 11-8.49 0"
-                  stroke="rgba(255,255,255,0.9)"
-                  strokeWidth={2}
+                  stroke="rgba(255,255,255,0.95)"
+                  strokeWidth={2.5}
                   strokeLinecap="round"
                 />
               </Svg>
@@ -97,32 +89,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  outerRing: {
-    width: 210,
-    height: 210,
-    borderRadius: 105,
-    borderWidth: 1.5,
+  bezel: {
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  innerRing: {
-    width: 192,
-    height: 192,
-    borderRadius: 96,
-    borderWidth: 1,
+  groove: {
+    width: 208,
+    height: 208,
+    borderRadius: 104,
     alignItems: 'center',
     justifyContent: 'center',
   },
   button: {
-    width: 172,
-    height: 172,
-    borderRadius: 86,
+    width: 176,
+    height: 176,
+    borderRadius: 88,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 12,
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 14,
+    overflow: 'hidden',
+  },
+  highlightArc: {
+    position: 'absolute',
+    top: 8,
+    left: 28,
+    right: 28,
+    height: 36,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderTopLeftRadius: 60,
+    borderTopRightRadius: 60,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
   },
   content: {
     alignItems: 'center',
@@ -134,13 +143,13 @@ const styles = StyleSheet.create({
   startLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.9)',
+    color: 'rgba(255,255,255,0.92)',
     letterSpacing: 4,
   },
   engineLabel: {
     fontSize: 10,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(255,255,255,0.4)',
     letterSpacing: 3,
     marginTop: 2,
   },
