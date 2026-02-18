@@ -10,10 +10,7 @@ interface RecentDriveProps {
 }
 
 /**
- * Recent drive card showing the most recent completed drive
- *
- * Displays drive summary stats and navigates to drive detail on tap.
- * Shows empty state when no drives available.
+ * Recent drive card — minimal, elegant summary of last drive
  */
 export function RecentDrive({ drive }: RecentDriveProps) {
   const { colors } = useTheme();
@@ -26,22 +23,19 @@ export function RecentDrive({ drive }: RecentDriveProps) {
           No drives yet
         </ThemedText>
         <ThemedText variant="secondary" style={styles.emptyHint}>
-          Start your first drive to see your stats here
+          Your first delivery awaits
         </ThemedText>
       </View>
     );
   }
 
   const handlePress = () => {
-    // Use modal summary route (not history tab) to avoid tab navigation confusion
     router.push(`/drive/summary/${drive.id}`);
   };
 
-  // Format duration
   const durationMinutes = drive.durationMs ? Math.round(drive.durationMs / 60000) : 0;
   const durationText = durationMinutes > 0 ? `${durationMinutes} min` : '< 1 min';
 
-  // Format date/time
   const startDate = drive.startTime instanceof Date ? drive.startTime : new Date(drive.startTime);
   const dateText = formatDate(startDate);
   const timeText = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -60,17 +54,19 @@ export function RecentDrive({ drive }: RecentDriveProps) {
     >
       <View style={styles.header}>
         <ThemedText variant="subtitle" style={styles.title}>
-          Last Drive
+          Last Delivery
         </ThemedText>
         <ThemedText variant="secondary" style={styles.date}>
-          {dateText} at {timeText}
+          {dateText} · {timeText}
         </ThemedText>
       </View>
 
       <View style={styles.statsRow}>
         <StatItem label="Score" value={drive.score ?? 0} highlight />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <StatItem label="Spills" value={drive.spillCount ?? 0} />
-        <StatItem label="Duration" value={durationText} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+        <StatItem label="Time" value={durationText} />
       </View>
     </Pressable>
   );
@@ -106,13 +102,9 @@ function formatDate(date: Date): string {
   const today = new Date();
   const yesterday = new Date(Date.now() - 86400000);
 
-  if (isSameDay(date, today)) {
-    return 'Today';
-  } else if (isSameDay(date, yesterday)) {
-    return 'Yesterday';
-  } else {
-    return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-  }
+  if (isSameDay(date, today)) return 'Today';
+  if (isSameDay(date, yesterday)) return 'Yesterday';
+  return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 function isSameDay(d1: Date, d2: Date): boolean {
@@ -138,6 +130,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '600',
+    fontSize: 15,
   },
   date: {
     fontSize: 12,
@@ -145,21 +138,30 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  divider: {
+    width: 1,
+    height: 32,
+    opacity: 0.5,
   },
   statItem: {
     alignItems: 'center',
+    flex: 1,
   },
   statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 11,
     marginTop: Spacing.xs,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   emptyText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: Spacing.xs,
   },
   emptyHint: {

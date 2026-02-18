@@ -74,7 +74,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          headerTitle: 'Water Cup Coach',
+          headerTitle: 'Tofu Coach',
           tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />

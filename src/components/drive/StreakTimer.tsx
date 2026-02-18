@@ -85,11 +85,13 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 48,
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
   label: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: Spacing.xs,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
 });

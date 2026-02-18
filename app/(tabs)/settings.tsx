@@ -78,7 +78,7 @@ export default function SettingsScreen() {
               <ThemedText>1.0.0</ThemedText>
             </SettingRow>
             <SettingRow label="App Name" style={{ borderBottomWidth: 0 }}>
-              <ThemedText>Water Cup Coach</ThemedText>
+              <ThemedText>Tofu Coach</ThemedText>
             </SettingRow>
           </View>
         </View>

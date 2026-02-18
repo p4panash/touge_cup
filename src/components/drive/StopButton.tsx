@@ -9,9 +9,6 @@ interface StopButtonProps {
 
 /**
  * Stop button for ending an active drive
- *
- * Clearly visible danger-colored button to manually end the drive.
- * Per CONTEXT.md: "Visible stop button - clear button to end drive manually at any time"
  */
 export function StopButton({ onPress }: StopButtonProps) {
   const { colors } = useTheme();
@@ -28,7 +25,10 @@ export function StopButton({ onPress }: StopButtonProps) {
         },
       ]}
     >
-      <ThemedText style={styles.text}>STOP</ThemedText>
+      <View style={styles.content}>
+        <View style={styles.stopIcon} />
+        <ThemedText style={styles.text}>STOP</ThemedText>
+      </View>
     </Pressable>
   );
 }
@@ -41,9 +41,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  stopIcon: {
+    width: 16,
+    height: 16,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: 3,
+  },
   text: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
+    letterSpacing: 2,
   },
 });

@@ -10,13 +10,16 @@ import { useDriveHistory } from '@/hooks/useDriveHistory';
 import { Spacing } from '@/theme/spacing';
 
 /**
- * Home screen - primary entry point for users
+ * Home screen — the garage
  *
- * Displays:
- * - App title
- * - Hero start button (dominant primary action)
- * - Difficulty selector (Easy | Experienced | Master)
- * - Most recent completed drive card
+ * Layout (top → bottom):
+ *   Title group (subtitle)
+ *   ↕ flexible space
+ *   Drive group (start button + difficulty pills)
+ *   ↕ some space
+ *   Last Delivery card
+ *   ↕ small space
+ *   Tab bar (rendered by layout)
  */
 export default function HomeScreen() {
   const router = useRouter();
@@ -26,33 +29,31 @@ export default function HomeScreen() {
   const recentDrive = drives.length > 0 ? drives[0] : null;
 
   const handleStartDrive = () => {
-    // Start the drive state machine
     startManual();
-    // Navigate to active drive screen
     router.push('/drive/active');
   };
 
   return (
     <ThemedView style={styles.container}>
-      {/* App Title */}
-      <View style={styles.header}>
-        <ThemedText variant="title" style={styles.title}>
-          Water Cup Coach
-        </ThemedText>
+      {/* Title group */}
+      <View style={styles.titleGroup}>
         <ThemedText variant="secondary" style={styles.subtitle}>
-          Train smooth driving with audio feedback
+          Smooth driving through sound
         </ThemedText>
       </View>
 
-      {/* Hero Section: Start Button + Difficulty Selector as cohesive unit */}
-      <View style={styles.heroSection}>
+      {/* Flexible spacer pushes drive group toward center */}
+      <View style={styles.spacer} />
+
+      {/* Drive group: button + difficulty */}
+      <View style={styles.driveGroup}>
         <StartButton onPress={handleStartDrive} disabled={isDriving} />
         <View style={styles.difficultyWrapper}>
           <DifficultySelector />
         </View>
       </View>
 
-      {/* Recent Drive */}
+      {/* Last Delivery */}
       <View style={styles.recentContainer}>
         <RecentDrive drive={recentDrive} />
       </View>
@@ -65,31 +66,28 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xl,
   },
-  header: {
+  titleGroup: {
     alignItems: 'center',
-    marginBottom: Spacing.xl,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: Spacing.xs,
+    paddingTop: Spacing.sm,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     textAlign: 'center',
+    letterSpacing: 0.5,
   },
-  heroSection: {
+  spacer: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  driveGroup: {
     alignItems: 'center',
   },
   difficultyWrapper: {
-    marginTop: Spacing.lg,
+    marginTop: Spacing.sm,
   },
   recentContainer: {
     width: '100%',
-    paddingBottom: Spacing.lg,
+    marginTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
 });

@@ -66,7 +66,7 @@ export default function HistoryScreen() {
       <View style={styles.emptyContainer}>
         <ThemedText style={styles.emptyIcon}>🚗</ThemedText>
         <ThemedText variant="secondary" style={styles.emptyText}>
-          No drives yet. Start your first drive!
+          No deliveries yet. Time to hit the touge!
         </ThemedText>
       </View>
     ),

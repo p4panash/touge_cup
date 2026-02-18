@@ -1,29 +1,35 @@
 /**
- * Light and dark mode color definitions
- * Used by useTheme hook to provide system-adaptive colors
+ * Tofu Coach — Racing-inspired color palette
+ *
+ * Clean reds for racing heritage, warm neutrals for the
+ * tofu delivery aesthetic. High contrast, especially in dark mode.
  */
 export const Colors = {
   light: {
-    background: '#ffffff',
-    surface: '#f5f5f5',
+    background: '#faf8f5',
+    surface: '#f0ece6',
     text: '#1a1a1a',
-    textSecondary: '#666666',
-    primary: '#00d4ff',
-    danger: '#ff4444',
-    success: '#00ff00',
-    warning: '#ffaa00',
-    border: '#e0e0e0',
+    textSecondary: '#8a7e6b',
+    primary: '#cc2936',       // racing red — high contrast, unmistakable
+    primaryMuted: '#e8a0a0',  // softer red for backgrounds
+    danger: '#c41e2a',
+    success: '#4a9e6b',       // clean green
+    warning: '#d4943a',       // amber
+    border: '#ddd5c8',
+    accent: '#6b8f71',        // forest accent
   },
   dark: {
-    background: '#1a1a2e',
-    surface: '#2a2a4e',
-    text: '#ffffff',
-    textSecondary: '#888888',
-    primary: '#00d4ff',
-    danger: '#ff4444',
-    success: '#00ff00',
-    warning: '#ffaa00',
-    border: '#3a3a5e',
+    background: '#000000',    // true black — OLED friendly
+    surface: '#1a1a1a',
+    text: '#f0ece6',
+    textSecondary: '#777777',
+    primary: '#e63946',       // bright racing red — pops on black
+    primaryMuted: '#3a1418',  // muted red for dark backgrounds
+    danger: '#e63946',
+    success: '#5ab87d',       // clean green
+    warning: '#e0a84f',       // amber
+    border: '#2a2a2a',
+    accent: '#7dab83',        // forest accent
   },
 };
 

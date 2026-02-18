@@ -34,7 +34,7 @@ export function DriveListItem({ drive, onDelete }: DriveListItemProps) {
     // Show confirmation dialog
     Alert.alert(
       'Delete Drive',
-      `Delete this drive from ${formatDriveDate(drive.startTime)}? This cannot be undone.`,
+      `Delete this delivery from ${formatDriveDate(drive.startTime)}? This cannot be undone.`,
       [
         {
           text: 'Cancel',
