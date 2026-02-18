@@ -28,15 +28,11 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* Tagline */}
-      <View style={styles.header}>
+      {/* Hero Section */}
+      <View style={styles.heroSection}>
         <ThemedText variant="secondary" style={styles.subtitle}>
           Smooth driving through sound
         </ThemedText>
-      </View>
-
-      {/* Hero Section */}
-      <View style={styles.heroSection}>
         <StartButton onPress={handleStartDrive} disabled={isDriving} />
         <View style={styles.difficultyWrapper}>
           <DifficultySelector />
@@ -58,18 +54,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.sm,
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: Spacing.xs,
-  },
   subtitle: {
     fontSize: 13,
     textAlign: 'center',
     letterSpacing: 0.5,
+    marginBottom: Spacing.lg,
   },
   heroSection: {
+    flex: 1,
     alignItems: 'center',
-    marginTop: Spacing.xl,
+    justifyContent: 'center',
   },
   difficultyWrapper: {
     marginTop: Spacing.sm,
