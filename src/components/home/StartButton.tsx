@@ -1,6 +1,6 @@
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 
 interface StartButtonProps {
   onPress: () => void;
@@ -10,59 +10,83 @@ interface StartButtonProps {
 /**
  * Engine start/stop button — inspired by modern car ignition buttons
  *
- * Large circular button with a metallic ring, power icon, and
- * START / ENGINE labels. Glows red when active.
+ * Metallic outer ring, red center with power icon.
+ * Designed to feel premium and tactile.
  */
 export function StartButton({ onPress, disabled = false }: StartButtonProps) {
   const { colors, isDark } = useTheme();
 
+  const ringColor = isDark
+    ? 'rgba(255,255,255,0.08)'
+    : 'rgba(0,0,0,0.06)';
+
+  const ringBorder = isDark
+    ? 'rgba(255,255,255,0.12)'
+    : 'rgba(0,0,0,0.08)';
+
   return (
     <View style={styles.wrapper}>
-      {/* Chrome-style outer ring */}
+      {/* Metallic outer ring */}
       <View
         style={[
           styles.outerRing,
           {
-            borderColor: disabled
-              ? 'transparent'
-              : isDark
-                ? 'rgba(224, 107, 79, 0.2)'
-                : 'rgba(80, 80, 80, 0.15)',
+            backgroundColor: ringColor,
+            borderColor: ringBorder,
           },
         ]}
       >
-        <Pressable
-          onPress={onPress}
-          disabled={disabled}
-          style={({ pressed }) => [
-            styles.button,
+        {/* Inner shadow ring for depth */}
+        <View
+          style={[
+            styles.innerRing,
             {
-              backgroundColor: disabled ? colors.textSecondary : colors.primary,
-              opacity: pressed ? 0.85 : 1,
-              transform: [{ scale: pressed ? 0.96 : 1 }],
+              borderColor: isDark
+                ? 'rgba(255,255,255,0.05)'
+                : 'rgba(0,0,0,0.03)',
             },
           ]}
         >
-          <View style={styles.content}>
-            {/* Power icon */}
-            <Svg width={32} height={32} viewBox="0 0 24 24" fill="none" style={styles.icon}>
-              <Path
-                d="M12 2v6"
-                stroke="rgba(255,255,255,0.85)"
-                strokeWidth={2.5}
-                strokeLinecap="round"
-              />
-              <Path
-                d="M16.24 7.76a6 6 0 11-8.49 0"
-                stroke="rgba(255,255,255,0.85)"
-                strokeWidth={2.5}
-                strokeLinecap="round"
-              />
-            </Svg>
-            <Text style={styles.startLabel}>START</Text>
-            <Text style={styles.engineLabel}>ENGINE</Text>
-          </View>
-        </Pressable>
+          <Pressable
+            onPress={onPress}
+            disabled={disabled}
+            style={({ pressed }) => [
+              styles.button,
+              {
+                backgroundColor: disabled
+                  ? colors.textSecondary
+                  : colors.primary,
+                opacity: pressed ? 0.85 : 1,
+                transform: [{ scale: pressed ? 0.97 : 1 }],
+                shadowColor: disabled ? '#000' : colors.primary,
+              },
+            ]}
+          >
+            <View style={styles.content}>
+              {/* Power icon */}
+              <Svg width={36} height={36} viewBox="0 0 24 24" fill="none" style={styles.icon}>
+                <Path
+                  d="M12 2v8"
+                  stroke="rgba(255,255,255,0.9)"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                />
+                <Path
+                  d="M16.24 7.76a6 6 0 11-8.49 0"
+                  stroke="rgba(255,255,255,0.9)"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                />
+              </Svg>
+              <Text style={styles.startLabel}>
+                {disabled ? 'RUNNING' : 'ENGINE'}
+              </Text>
+              <Text style={styles.engineLabel}>
+                {disabled ? '' : 'START'}
+              </Text>
+            </View>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -74,45 +98,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   outerRing: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 3,
+    width: 210,
+    height: 210,
+    borderRadius: 105,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  innerRing: {
+    width: 192,
+    height: 192,
+    borderRadius: 96,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   button: {
-    width: 170,
-    height: 170,
-    borderRadius: 85,
+    width: 172,
+    height: 172,
+    borderRadius: 86,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 10,
-    borderWidth: 2,
-    borderColor: 'rgba(0,0,0,0.1)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 12,
   },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   icon: {
-    marginBottom: 6,
+    marginBottom: 8,
   },
   startLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.85)',
-    letterSpacing: 3,
+    color: 'rgba(255,255,255,0.9)',
+    letterSpacing: 4,
   },
   engineLabel: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.45)',
-    letterSpacing: 2,
+    color: 'rgba(255,255,255,0.5)',
+    letterSpacing: 3,
     marginTop: 2,
   },
 });

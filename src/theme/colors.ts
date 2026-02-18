@@ -1,20 +1,20 @@
 /**
- * Tofu Coach — JDM-inspired color palette
+ * Tofu Coach — Racing-inspired color palette
  *
- * Warm tones inspired by mountain passes at night,
- * the glow of taillights, and Fujiwara Tofu Shop aesthetics.
+ * Clean reds for racing heritage, warm neutrals for the
+ * tofu delivery aesthetic. High contrast, especially in dark mode.
  */
 export const Colors = {
   light: {
     background: '#faf8f5',
     surface: '#f0ece6',
-    text: '#2c2416',
+    text: '#1a1a1a',
     textSecondary: '#8a7e6b',
-    primary: '#d4583a',       // warm touge red — taillights on mountain roads
-    primaryMuted: '#e8a490',  // softer red for backgrounds
-    danger: '#c93030',
-    success: '#4a9e6b',       // mountain green
-    warning: '#d4943a',       // amber headlights
+    primary: '#cc2936',       // racing red — high contrast, unmistakable
+    primaryMuted: '#e8a0a0',  // softer red for backgrounds
+    danger: '#c41e2a',
+    success: '#4a9e6b',       // clean green
+    warning: '#d4943a',       // amber
     border: '#ddd5c8',
     accent: '#6b8f71',        // forest accent
   },
@@ -23,11 +23,11 @@ export const Colors = {
     surface: '#1a1a1a',
     text: '#f0ece6',
     textSecondary: '#777777',
-    primary: '#e06b4f',       // warm touge red — brighter in dark
-    primaryMuted: '#3a1a14',  // muted red for dark backgrounds
-    danger: '#e04040',
-    success: '#5ab87d',       // mountain green
-    warning: '#e0a84f',       // amber headlights
+    primary: '#e63946',       // bright racing red — pops on black
+    primaryMuted: '#3a1418',  // muted red for dark backgrounds
+    danger: '#e63946',
+    success: '#5ab87d',       // clean green
+    warning: '#e0a84f',       // amber
     border: '#2a2a2a',
     accent: '#7dab83',        // forest accent
   },

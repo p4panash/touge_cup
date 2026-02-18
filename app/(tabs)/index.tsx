@@ -28,11 +28,8 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {/* App Title */}
+      {/* Tagline */}
       <View style={styles.header}>
-        <ThemedText variant="title" style={styles.title}>
-          Tofu Coach
-        </ThemedText>
         <ThemedText variant="secondary" style={styles.subtitle}>
           Smooth driving through sound
         </ThemedText>
@@ -63,13 +60,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing.lg,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginBottom: Spacing.xs,
+    marginBottom: Spacing.sm,
   },
   subtitle: {
     fontSize: 13,
