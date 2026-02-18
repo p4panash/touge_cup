@@ -19,16 +19,16 @@ export const Colors = {
     accent: '#6b8f71',        // forest accent
   },
   dark: {
-    background: '#1a1714',
-    surface: '#2a2520',
+    background: '#000000',    // true black — OLED friendly
+    surface: '#1a1a1a',
     text: '#f0ece6',
-    textSecondary: '#9a8e7b',
+    textSecondary: '#777777',
     primary: '#e06b4f',       // warm touge red — brighter in dark
-    primaryMuted: '#4a2a20',  // muted red for dark backgrounds
+    primaryMuted: '#3a1a14',  // muted red for dark backgrounds
     danger: '#e04040',
     success: '#5ab87d',       // mountain green
     warning: '#e0a84f',       // amber headlights
-    border: '#3a3530',
+    border: '#2a2a2a',
     accent: '#7dab83',        // forest accent
   },
 };

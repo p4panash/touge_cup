@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/shared/ThemedView';
 import { ThemedText } from '@/components/shared/ThemedText';
@@ -7,18 +7,15 @@ import { DifficultySelector } from '@/components/home/DifficultySelector';
 import { RecentDrive } from '@/components/home/RecentDrive';
 import { useDriveDetection } from '@/hooks/useDriveDetection';
 import { useDriveHistory } from '@/hooks/useDriveHistory';
-import { useTheme } from '@/hooks/useTheme';
 import { Spacing } from '@/theme/spacing';
 
 /**
  * Home screen — the garage
  *
- * Clean, minimal layout with tofu delivery aesthetic.
- * Japanese text accents for Initial D flavor.
+ * Clean, minimal layout with engine start/stop aesthetic.
  */
 export default function HomeScreen() {
   const router = useRouter();
-  const { colors, isDark } = useTheme();
   const { startManual, isDriving } = useDriveDetection();
   const { drives, loading } = useDriveHistory(1);
 
@@ -33,9 +30,6 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       {/* App Title */}
       <View style={styles.header}>
-        <Text style={[styles.titleJP, { color: colors.textSecondary }]}>
-          豆腐コーチ
-        </Text>
         <ThemedText variant="title" style={styles.title}>
           Tofu Coach
         </ThemedText>
@@ -70,12 +64,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: Spacing.lg,
-  },
-  titleJP: {
-    fontSize: 13,
-    fontWeight: '300',
-    letterSpacing: 6,
-    marginBottom: 4,
   },
   title: {
     fontSize: 30,

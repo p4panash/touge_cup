@@ -63,10 +63,10 @@ export function WaterCup({ fillLevel }: WaterCupProps) {
     };
   });
 
-  const waterColor = isDark ? 'rgba(120, 180, 220, 0.4)' : 'rgba(100, 160, 210, 0.35)';
-  const waterSurfaceColor = isDark ? 'rgba(150, 200, 240, 0.5)' : 'rgba(130, 190, 230, 0.45)';
-  const boxColor = isDark ? '#3d3428' : '#c4a97d';
-  const boxBorderColor = isDark ? '#5a4a36' : '#a08860';
+  const waterColor = isDark ? 'rgba(80, 140, 180, 0.35)' : 'rgba(100, 160, 210, 0.35)';
+  const waterSurfaceColor = isDark ? 'rgba(120, 180, 220, 0.4)' : 'rgba(130, 190, 230, 0.45)';
+  const boxColor = isDark ? '#1a1610' : '#c4a97d';
+  const boxBorderColor = isDark ? '#333' : '#a08860';
   const tofuColor = isDark ? '#e8e0d0' : '#f5f0e4';
   const tofuShadow = isDark ? '#c8c0b0' : '#e0d8c8';
 
@@ -76,11 +76,8 @@ export function WaterCup({ fillLevel }: WaterCupProps) {
     <View style={styles.container}>
       {/* Box label */}
       <View style={styles.labelContainer}>
-        <Text style={[styles.labelJP, { color: isDark ? '#9a8e7b' : '#8a7e6b' }]}>
+        <Text style={[styles.labelJP, { color: isDark ? '#555' : '#8a7e6b' }]}>
           藤原豆腐店
-        </Text>
-        <Text style={[styles.labelSub, { color: isDark ? '#6a5e4b' : '#a89878' }]}>
-          自家用
         </Text>
       </View>
 
@@ -154,15 +151,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   labelJP: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '300',
     letterSpacing: 6,
-  },
-  labelSub: {
-    fontSize: 11,
-    fontWeight: '300',
-    letterSpacing: 4,
-    marginTop: 2,
   },
   box: {
     width: 180,

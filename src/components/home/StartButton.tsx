@@ -1,7 +1,6 @@
 import { StyleSheet, Pressable, View, Text } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
-import { ThemedText } from '../shared/ThemedText';
-import { Spacing, BorderRadius } from '../../theme/spacing';
+import Svg, { Path, Circle } from 'react-native-svg';
 
 interface StartButtonProps {
   onPress: () => void;
@@ -9,17 +8,17 @@ interface StartButtonProps {
 }
 
 /**
- * Hero start button — styled as an ignition/launch action
+ * Engine start/stop button — inspired by modern car ignition buttons
  *
- * Large circular button with a subtle ring and Japanese text accent.
- * The primary action on the home screen.
+ * Large circular button with a metallic ring, power icon, and
+ * START / ENGINE labels. Glows red when active.
  */
 export function StartButton({ onPress, disabled = false }: StartButtonProps) {
   const { colors, isDark } = useTheme();
 
   return (
     <View style={styles.wrapper}>
-      {/* Outer glow ring */}
+      {/* Chrome-style outer ring */}
       <View
         style={[
           styles.outerRing,
@@ -28,7 +27,7 @@ export function StartButton({ onPress, disabled = false }: StartButtonProps) {
               ? 'transparent'
               : isDark
                 ? 'rgba(224, 107, 79, 0.2)'
-                : 'rgba(212, 88, 58, 0.15)',
+                : 'rgba(80, 80, 80, 0.15)',
           },
         ]}
       >
@@ -45,8 +44,23 @@ export function StartButton({ onPress, disabled = false }: StartButtonProps) {
           ]}
         >
           <View style={styles.content}>
-            <Text style={styles.textJP}>発進</Text>
-            <ThemedText style={styles.text}>START</ThemedText>
+            {/* Power icon */}
+            <Svg width={32} height={32} viewBox="0 0 24 24" fill="none" style={styles.icon}>
+              <Path
+                d="M12 2v6"
+                stroke="rgba(255,255,255,0.85)"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+              />
+              <Path
+                d="M16.24 7.76a6 6 0 11-8.49 0"
+                stroke="rgba(255,255,255,0.85)"
+                strokeWidth={2.5}
+                strokeLinecap="round"
+              />
+            </Svg>
+            <Text style={styles.startLabel}>START</Text>
+            <Text style={styles.engineLabel}>ENGINE</Text>
           </View>
         </Pressable>
       </View>
@@ -60,40 +74,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   outerRing: {
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    borderWidth: 2,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
   },
   button: {
-    width: 190,
-    height: 190,
-    borderRadius: 95,
+    width: 170,
+    height: 170,
+    borderRadius: 85,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 12,
+    shadowRadius: 8,
     elevation: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(0,0,0,0.1)',
   },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textJP: {
-    fontSize: 28,
-    fontWeight: '200',
-    color: 'rgba(255,255,255,0.9)',
-    letterSpacing: 8,
-    marginBottom: 4,
+  icon: {
+    marginBottom: 6,
   },
-  text: {
-    fontSize: 16,
+  startLabel: {
+    fontSize: 11,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.8)',
-    letterSpacing: 6,
+    color: 'rgba(255,255,255,0.85)',
+    letterSpacing: 3,
+  },
+  engineLabel: {
+    fontSize: 9,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.45)',
+    letterSpacing: 2,
+    marginTop: 2,
   },
 });

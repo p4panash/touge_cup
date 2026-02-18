@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { ThemedText } from '../shared/ThemedText';
 import { useTheme } from '../../hooks/useTheme';
 import { Spacing, BorderRadius } from '../../theme/spacing';
@@ -52,13 +52,13 @@ export function StatsBreakdown({ drive }: StatsBreakdownProps) {
   const isPerfectDrive = drive.spillCount === 0;
 
   // Delivery verdict based on score
-  const getVerdict = (score: number | null): { text: string; jp: string } => {
-    if (score === null) return { text: 'Unknown', jp: '不明' };
-    if (score >= 95) return { text: 'Legendary', jp: '伝説' };
-    if (score >= 80) return { text: 'Excellent', jp: '優秀' };
-    if (score >= 60) return { text: 'Good', jp: '良好' };
-    if (score >= 40) return { text: 'Rough', jp: '荒い' };
-    return { text: 'Spilled!', jp: '失敗' };
+  const getVerdict = (score: number | null): string => {
+    if (score === null) return 'Unknown';
+    if (score >= 95) return 'Legendary';
+    if (score >= 80) return 'Excellent';
+    if (score >= 60) return 'Good';
+    if (score >= 40) return 'Rough';
+    return 'Spilled!';
   };
 
   const verdict = getVerdict(drive.score);
@@ -67,14 +67,11 @@ export function StatsBreakdown({ drive }: StatsBreakdownProps) {
     <View style={[styles.container, { backgroundColor: colors.surface }]}>
       {/* Score section */}
       <View style={styles.scoreSection}>
-        <Text style={[styles.verdictJP, { color: colors.textSecondary }]}>
-          {verdict.jp}
-        </Text>
         <ThemedText style={[styles.scoreValue, { color: scoreColor }]}>
           {drive.score !== null ? drive.score : '--'}
         </ThemedText>
         <ThemedText variant="secondary" style={styles.verdictText}>
-          {verdict.text}
+          {verdict}
         </ThemedText>
         {isPerfectDrive && drive.score !== null && (
           <View style={[styles.perfectBadge, { backgroundColor: colors.primary }]}>
@@ -128,12 +125,6 @@ const styles = StyleSheet.create({
   scoreSection: {
     alignItems: 'center',
     marginBottom: Spacing.lg,
-  },
-  verdictJP: {
-    fontSize: 14,
-    fontWeight: '300',
-    letterSpacing: 4,
-    marginBottom: Spacing.xs,
   },
   scoreValue: {
     fontSize: 72,
